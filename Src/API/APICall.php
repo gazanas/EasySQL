@@ -6,27 +6,6 @@ use Src\Collection\Collection as Collection;
 
 class APICall
 {
-
-    /**
-    * If a parameter is required but is not passed set it to NULL
-    *
-    * @param array $params The parameters array.
-    * @param string $table The name of the table.
-    *
-    * @return array The complete parameters array.
-    */
-    public function setNotPassedParameters(array $params, string $table)
-    {
-        $nulled = array();
-        $columns = $this->dbinfo->getNullableColumns($this->config[4], $table);
-        foreach ($columns as $column) {
-            if (isset($params[$column]) === false || empty($params[$column])) {
-                $nulled[$column] = null;
-            }
-        }
-
-        return array_merge($params, $nulled);
-    }
     
     /**
      *   Finds the parameters that are necessary for the API call and
