@@ -46,7 +46,11 @@ class Parameters
         // Table name.
         $tableName = $result[(count($result) - 1)];
 
-        $bindParams = array_merge($bindParams, $this->sortParameters($params, $tableName));
+        if(preg_match('/INSERT INTO/', $query)) {
+            $bindParams = $this->sortParameters($params, $tableName);
+        } else {
+            $bindParams = array_merge($bindParams, array_values($params));
+        }
 
         // Put the type string in the first position of the parameters.
         return $bindParams;
@@ -65,7 +69,7 @@ class Parameters
 
         $bindParams = array();
 
-        $dbinfo = new \Src\API\DatabaseDAO($this->config);
+        $dbinfo = new \docroot\easySQL\Src\API\DatabaseDAO($this->config);
 
         // Get the columns of table.
         $fields = $dbinfo->getColumns($tableName);
@@ -83,6 +87,8 @@ class Parameters
                 }
             }
         }
+
+        ksort($bindParams);
 
         return $bindParams;
     }
