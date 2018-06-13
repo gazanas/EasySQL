@@ -69,7 +69,7 @@ class Parameters
 
         $bindParams = array();
 
-        $dbinfo = new Src\API\DatabaseDAO($this->config);
+        $dbinfo = new \Src\API\DatabaseDAO($this->config);
 
         // Get the columns of table.
         $fields = $dbinfo->getColumns($tableName);
