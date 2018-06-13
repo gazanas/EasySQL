@@ -28,10 +28,6 @@ class Parameters
             return;
         }
 
-        if (isset($params['updated']) === true) {
-            $bindParams = [&$params['updated']];
-        }
-
         if (isset($params['condition']) === true && empty($params['condition']) === false) {
             unset($params['condition']);
         }
