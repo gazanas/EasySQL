@@ -176,9 +176,10 @@ class Query
      *
      * @return string $query The insert query.
      */
-    public function setUpInsertQuery(array $allColumns, $restColumns, array $autoColumns)
+    public function setUpInsertQuery(array $allColumns, $restColumns, array $autoColumns, $database, $table, $dbinfo)
     {
         $preparedParameter = $this->getRequiredParametersToInsert($allColumns, $restColumns);
+        $preparedParameter = $this->setNotPassedParameters($preparedParameter, $database, $table, $dbinfo);
 
         $i     = 0;
         $query = '';
@@ -209,6 +210,33 @@ class Query
         }
 
         return $query;
+    }
+
+    /**
+    * If a parameter is required but is not passed set it to NULL
+    *
+    * @param array $params The parameters array.
+    * @param string $table The name of the table.
+    *
+    * @return array The complete parameters array.
+    */
+    public function setNotPassedParameters(array $params, string $database, string $table, $dbinfo)
+    {
+        $new = array();
+        $allColumns = $dbinfo->getColumns($table);
+        $columns = $dbinfo->getNullableColumns($database, $table);
+        foreach ($columns as $column) {
+            if (isset($params[$column]) === false || empty($params[$column])) {
+                $params[$column] = 'NULL';
+            }
+        }
+
+        foreach($allColumns as $key => $column) {
+            $new[$column] = $params[$column];
+
+        }
+
+        return $new;
     }
 
     /**
