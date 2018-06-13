@@ -161,11 +161,9 @@ class DAO implements DAOInterface
             return;
         }
 
-        $params = $this->api->setNotPassedParameters($params, $this->table);
-
         $query = 'INSERT INTO '.$this->table.' VALUES(';
 
-        $query .= $this->query->setUpInsertQuery($this->api->dbinfo->getColumns($this->table), $params, $this->api->dbinfo->getAutoCompleted($this->table));
+        $query .= $this->query->setUpInsertQuery($this->api->dbinfo->getColumns($this->table), $params, $this->api->dbinfo->getAutoCompleted($this->table), $this->config[4], $this->table, $this->api->dbinfo);
 
         try {
             return $this->sql->executeQuery($query, $params);
