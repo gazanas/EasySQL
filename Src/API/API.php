@@ -3,7 +3,6 @@
 namespace Src\API;
 
 use Src\Data as Data;
-use Src\Collection\Collection as Collection;
 
 class API extends APICall
 {

@@ -28,10 +28,6 @@ class Parameters
             return;
         }
 
-        if (isset($params['updated']) === true) {
-            $bindParams = [&$params['updated']];
-        }
-
         if (isset($params['condition']) === true && empty($params['condition']) === false) {
             unset($params['condition']);
         }
@@ -46,7 +42,11 @@ class Parameters
         // Table name.
         $tableName = $result[(count($result) - 1)];
 
-        $bindParams = array_merge($bindParams, $this->sortParameters($params, $tableName));
+        if(preg_match('/INSERT INTO/', $query)) {
+            $bindParams = $this->sortParameters($params, $tableName);
+        } else {
+            $bindParams = array_merge($bindParams, array_values($this->extractParameters($params)));
+        }
 
         // Put the type string in the first position of the parameters.
         return $bindParams;
@@ -81,6 +81,31 @@ class Parameters
                 if (in_array($field, $fields) === true) {
                     $bindParams[] = $param;
                 }
+            }
+        }
+
+        ksort($bindParams);
+
+        return $bindParams;
+    }
+
+    /**
+    * Extracts all the parameters from the api call
+    *
+    * @param $params The parameters array.
+    *
+    * @retrun $bindParams The extracted parameters array.
+    */
+    private function extractParameters(array $params) {
+
+        $bindParams = array();
+
+        // Set the parameters array in order of the column fields.
+        foreach ($params as $field => $param) {
+            if (is_array($param) === true) {
+                $bindParams[] = array_values($param)[1];
+            } else {
+                $bindParams[] = $param;
             }
         }
 

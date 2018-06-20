@@ -18,7 +18,7 @@ class DatabaseSingleton
      *
      * @param array $config Database Configuration Array.
      */
-    public function __construct(array $config)
+    private function __construct(array $config)
     {
         try {
             // Connect to database or throw error message.

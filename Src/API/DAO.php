@@ -3,8 +3,7 @@
 namespace Src\API;
 
 use Src\Data\SQL as SQL;
-use Src\Data\Query as Query;
-use Src\Collection as Collection;
+use Src\Data\QueryFactory as QueryFactory;
 
 class DAO implements DAOInterface
 {
@@ -15,9 +14,11 @@ class DAO implements DAOInterface
 
     protected $config;
 
-    protected $query;
-
     protected $api;
+
+    protected $queryFactory;
+
+    protected $query;
 
 
     public function __construct(array $config, string $table)
@@ -25,7 +26,9 @@ class DAO implements DAOInterface
         $this->config = $config;
         $this->sql    = new SQL($this->config);
         $this->api    = new API($this->config);
-        $this->query  = new Query();
+
+        $this->queryFactory  = new QueryFactory();
+        $this->query = $this->queryFactory->getQueryType();
 
         // Get the table name
         $this->table = $table;
@@ -86,12 +89,6 @@ class DAO implements DAOInterface
         }
 
         return $result;
-        /*try {
-            return $result->getCollection(0);
-        } catch (Collection\CollectionException $e) {
-            print($e->getMessage());
-            return;
-        }*/
     }
 
 
@@ -154,6 +151,8 @@ class DAO implements DAOInterface
      */
     public function insert(array $params)
     {
+        $this->query  = $this->queryFactory->getQueryType('insert');
+
         try {
             $this->api->matchRequired($this->config[4], $params, $this->table, $this->config);
         } catch (RequiredException $e) {
@@ -161,11 +160,9 @@ class DAO implements DAOInterface
             return;
         }
 
-        $params = $this->api->setNotPassedParameters($params, $this->table);
-
         $query = 'INSERT INTO '.$this->table.' VALUES(';
 
-        $query .= $this->query->setUpInsertQuery($this->api->dbinfo->getColumns($this->table), $params, $this->api->dbinfo->getAutoCompleted($this->table));
+        $query .= $this->query->setUpInsertQuery($this->api->dbinfo->getColumns($this->table), $params, $this->api->dbinfo->getAutoCompleted($this->table), $this->api->dbinfo->getNullableColumns($this->config[4], $this->table));
 
         try {
             return $this->sql->executeQuery($query, $params);

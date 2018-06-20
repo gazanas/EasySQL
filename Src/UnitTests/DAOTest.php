@@ -205,7 +205,7 @@ class DAOTest extends TestCase
         $data = $dao->get();
 
         foreach ($data as $value) {
-            $this->assertEquals($value->is_active, 1);
+            $this->assertEquals($value['is_active'], 1);
         }
 
     }//end testDAOUpdatesAllTableRows()

@@ -37,7 +37,7 @@ class CollectionTest extends TestCase
 
     public function testGetACollectionOfData()
     {
-        $expected = (object) [
+        $expected = [
             'username' => 'test',
             'phone' => '202-555-0121'
         ];
@@ -73,7 +73,7 @@ class CollectionTest extends TestCase
     {
         $this->collection->addCollection(['username' => 'test3', '202-555-0153']);
 
-        $expected = (object) [
+        $expected = [
             'username' => 'test3',
             '202-555-0153'
         ];

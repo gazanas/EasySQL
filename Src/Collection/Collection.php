@@ -64,8 +64,7 @@ class Collection implements \IteratorAggregate, \JsonSerializable
      */
     public function addCollection(array $element)
     {
-        $object = $this->arrayToObject($element);
-        $this->{count((array) $this)} = $object;
+        $this->{count((array) $this)} = $element;
     }
 
 
@@ -75,12 +74,12 @@ class Collection implements \IteratorAggregate, \JsonSerializable
      * @param array $element The array element to convert.
      *
      * @return StdClass The StdClass object.
-     */
+     
     private function arrayToObject(array $element)
     {
         return json_decode(json_encode((object) $element), false);
     }
-
+*/
 
     /**
      * Delete an array element of the Collection object

@@ -2,13 +2,10 @@
 
 namespace Src\Data;
 
-use Src\Data\Sets as Sets;
-
 class Query
 {
 
     protected $sets;
-
 
     public function __construct()
     {
@@ -78,20 +75,20 @@ class Query
     {
         $condition = $this->setUpCondition($params, $i);
 
+        if (isset($params['condition']) === true) {
+            $size = (count($params) - 2);
+        } else {
+            $size = (count($params) - 1);
+        }
+
         if (is_array($params[$key]) === true && is_numeric($key) === true) {
             $op = '';
             foreach ($params[$key] as $field => $param) {
                 if ($field === 'operator') {
                     $op = $param;
                     continue;
-                } elseif ($op === '') {
+                } else if ($op === '') {
                     $op = '=';
-                }
-
-                if (isset($params['condition']) === true) {
-                    $size = (count($params) - 2);
-                } else {
-                    $size = (count($params) - 1);
                 }
 
                 if ($i < $size) {
@@ -102,7 +99,7 @@ class Query
             }
         } else {
             if ($params[$key] && $key !== 'condition') {
-                if ($i < (count($params) - 1)) {
+                if ($i < $size) {
                     $query .= $key.' = ? '.$condition.' ';
                 } else {
                     $query .= $key.' = ?';
@@ -164,96 +161,5 @@ class Query
         }
 
         return $query;
-    }
-
-
-    /**
-     * Gets the parameters array for the insert query and sets up the
-     * values clause from the values of this array.
-     *
-     * @param array $allColumns  All the columns of the table.
-     * @param array $restColumns The columns that are not auto completed.
-     *
-     * @return string $query The insert query.
-     */
-    public function setUpInsertQuery(array $allColumns, $restColumns, array $autoColumns)
-    {
-        $preparedParameter = $this->getRequiredParametersToInsert($allColumns, $restColumns);
-
-        $i     = 0;
-        $query = '';
-        foreach ($preparedParameter as $key => $parameter) {
-            if ($i == (count($preparedParameter) - 1)) {
-                if ($parameter === 'NULL') {
-                    if ($this->checkCurrentTimestamp($key, $autoColumns)) {
-                        $query .= 'NOW())';
-                    } else {
-                        $query .= 'NULL)';
-                    }
-                } else {
-                    $query .= '?)';
-                }
-            } else {
-                if ($parameter === 'NULL') {
-                    if ($this->checkCurrentTimestamp($key, $autoColumns)) {
-                        $query .= 'NOW(),';
-                    } else {
-                        $query .= 'NULL,';
-                    }
-                } else {
-                    $query .= '?,';
-                }
-            }
-
-            $i++;
-        }
-
-        return $query;
-    }
-
-    /**
-    * Check if a parameter is of current_timestamp type.
-    *
-    * @param string $field The column name.
-    * @param array $autoColumns The array of the auto completed columns.
-    *
-    * @return boolean
-    */
-    public function checkCurrentTimestamp(string $field, array $autoColumns)
-    {
-        foreach ($autoColumns as $column) {
-            if ($column['name'] == $field && $column['type'] == 'current_timestamp') {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets all the columns passed by the user for the insert value clause, checks if those that are missing
-     * are auto_completed or nullable and gives them a value of NULL (string). Finally sets up the parameters array
-     * for the insert value clause e.g. array('NULL', '?', '?', '?') say the first column is auto incremented.
-     *
-     * @param array $allColumns  All the columns from a table.
-     * @param array $restColumns The columns that are not auto completed.
-     *
-     * @return array $preparedParameter An array that contains the prepared values of the insert values() clause.
-     */
-    private function getRequiredParametersToInsert(array $allColumns, array $restColumns)
-    {
-        foreach ($allColumns as $key => $column) {
-            if (array_key_exists($column, $restColumns) === false) {
-                if (empty(array_slice($restColumns, 0, $key)) === true) {
-                    $restColumns = ([$column => 'NULL'] + $restColumns);
-                } else {
-                    $preparedParameter = (array_slice($restColumns, 0, $key) + [$column => 'NULL'] + array_slice($restColumns, $key, (count($restColumns) - 1)));
-                }
-            } else {
-                $preparedParameter[$column] = $restColumns[$column]; 
-            }
-        }
-
-        return $preparedParameter;
     }
 }

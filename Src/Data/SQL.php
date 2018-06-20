@@ -2,7 +2,6 @@
 
 namespace Src\Data;
 
-use Src\Data\DatabaseSingleton as Connection;
 use Src\Collection\Collection as Collection;
 use Src\Collection\Group as Group;
 
@@ -38,7 +37,7 @@ class SQL
     public function __construct(array $config)
     {
         $this->_config      = $config;
-        $this->_db          = Connection::getDB($this->_config);
+        $this->_db          = DatabaseSingleton::getDB($this->_config);
         $this->sets              = new Sets();
         $this->_parameters = new Parameters($this->_config);
     }//end __construct()
@@ -104,7 +103,7 @@ class SQL
         $stmt = $this->_db->prepare($query);
 
         $params = $this->_parameters->prepareParameters($query, $params);
-        
+
         $stmt->execute($params);
 
         if (in_array($action, $this->sets->actionSet) === true) {
