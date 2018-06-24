@@ -30,7 +30,7 @@ $db->query('SET foreign_key_checks = 1');
 $result = null;
 $db     = null;
 
-$it = new RecursiveDirectoryIterator(dirname(__DIR__).'/Src/API/DAOs/', FilesystemIterator::SKIP_DOTS);
+$it = new RecursiveDirectoryIterator(dirname(__DIR__).'/EasySQL/Src/API/DAOs/', FilesystemIterator::SKIP_DOTS);
 $it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
 foreach ($it as $file) {
     if ($file->isDir() === true) {
