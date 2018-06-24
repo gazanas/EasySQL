@@ -125,6 +125,6 @@ class SQLBuilder extends XMLParser
         $data = preg_replace('/\<the\-class\-name\>/', $className, $data);
 
         file_put_contents(dirname(__DIR__).'/EasySQL/Src/API/DAOs/'.$className.'.php', $data);
-        chmod(dirname(__DIR__).'/Src/API/DAOs/'.$className.'.php', 0777);
+        chmod(dirname(__DIR__).'/EasySQL/Src/API/DAOs/'.$className.'.php', 0777);
     }
 }
