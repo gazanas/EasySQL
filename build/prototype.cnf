@@ -1,10 +1,10 @@
 <?php
 
-namespace Src\API\DAOs;
+namespace EasySQL\Src\API\DAOs;
 
-use Src\Data\SQL as SQL;
-use Src\API as API;
-use Src\Collection as Collection;
+use EasySQL\Src\Data\SQL as SQL;
+use EasySQL\Src\API as API;
+use EasySQL\Src\Collection as Collection;
 
 class <the-class-name> extends API\DAO implements API\DAOInterface
 {}//end class
