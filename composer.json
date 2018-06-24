@@ -1,9 +1,9 @@
 {
 	"autoload": {
 		"psr-4": {
-			"Src\\":"Src/"
+			"EasySQL\\Src\\":"EasySQL/Src/"
 		},
-		"files": ["Src/easySQL.php"]
+		"files": ["EasySQL/Src/easySQL.php"]
 	},
 
 	"require": {
