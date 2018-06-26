@@ -28,7 +28,6 @@ class DAO implements DAOInterface
         $this->api    = new API($this->config);
 
         $this->queryFactory  = new QueryFactory();
-        $this->query = $this->queryFactory->getQueryType();
 
         // Get the table name
         $this->table = $table;
@@ -43,6 +42,8 @@ class DAO implements DAOInterface
      */
     public function get(array $params = null)
     {
+        $this->query = $this->queryFactory->getQueryType();
+
         $query = 'SELECT * FROM '.$this->table;
         if (isset($params) && !empty($params)) {
             $query = $this->query->setUpQuery($query, $params);
@@ -65,6 +66,8 @@ class DAO implements DAOInterface
      */
     public function value(array $params)
     {
+        $this->query = $this->queryFactory->getQueryType();
+
         $required = ['return'];
         // Check if user passed the required "return" parameter
         try {
@@ -99,6 +102,8 @@ class DAO implements DAOInterface
      */
     public function update(array $params)
     {
+        $this->query = $this->queryFactory->getQueryType();
+
         $required = [
             'to_update',
             'updated',
@@ -130,6 +135,8 @@ class DAO implements DAOInterface
      */
     public function delete(array $params = null)
     {
+        $this->query = $this->queryFactory->getQueryType();
+        
         $query = 'DELETE FROM '.$this->table;
         if (isset($params) && !empty($params)) {
             $query = $this->query->setUpQuery($query, $params);
