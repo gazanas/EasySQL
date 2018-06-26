@@ -129,7 +129,7 @@ final class QueryTest extends TestCase
     }
 
     public function testSetupInsertQueryFromTheParametersPassed() {
-        $query = new Data\Query();
+        $query = new Data\InsertQuery();
         
         $allColumns = array(
                         'id',
@@ -143,12 +143,12 @@ final class QueryTest extends TestCase
                     );
 
         $notAutos = array(
-                    'username',
-                    'mail',
-                    'password',
-                    'is_active',
-                    'role',
-                    'created_at'
+                    'username' => 'test_user',
+                    'mail' => 'test_mail',
+                    'password' => 'secret',
+                    'is_active' => 0,
+                    'role' => 'user',
+                    'created_at' => '2018-05-22'
                 );
 
         $autos = array (
@@ -162,7 +162,11 @@ final class QueryTest extends TestCase
                     )
                 );
 
-        $insert = $query->setUpInsertQuery($allColumns, $notAutos, $autos);
+        $nullable = array(
+                    'created_at' => 'created_at'
+                );
+
+        $insert = $query->setUpInsertQuery($allColumns, $notAutos, $autos, $nullable);
 
         $expected = 'NULL,?,?,?,?,?,?,NOW())';
 
