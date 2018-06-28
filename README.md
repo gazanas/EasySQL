@@ -107,7 +107,7 @@ easy_sql('test_users', 'VALUE', array('return' => 'username'));
 - The API call to update a certain row is:
 
 ```
-easy_sql('test_users', 'UPDATE', array('to_updated' => 'username', 'updated' => 'root', 'id' => 1));
+easy_sql('test_users', 'UPDATE', array('to_update' => 'username', 'updated' => 'root', 'id' => 1));
 ```
 
 This will change the admin username to root.
