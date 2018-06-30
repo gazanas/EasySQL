@@ -86,7 +86,7 @@ class Parameters
 
         ksort($bindParams);
 
-        return $bindParams;
+        return array_values(array_filter($bindParams));
     }
 
     /**
