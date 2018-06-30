@@ -70,6 +70,8 @@ class InsertQuery {
         }
 
         foreach($allColumns as $key => $column) {
+		if(!isset($params[$column]))
+               		$params[$column] = null;
             $new[$column] = $params[$column];
 
         }
