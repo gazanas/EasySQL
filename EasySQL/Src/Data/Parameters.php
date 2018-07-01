@@ -86,7 +86,11 @@ class Parameters
 
         ksort($bindParams);
 
-        return array_values(array_filter($bindParams));
+        return array_values(array_filter($bindParams, array($this, 'parameterFilter')));
+    }
+    
+    private function parameterFilter($param){
+        return ($param !== NULL && $param !== FALSE && $param !== '');
     }
 
     /**
