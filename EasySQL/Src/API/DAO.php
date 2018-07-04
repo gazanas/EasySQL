@@ -38,7 +38,7 @@ class DAO implements DAOInterface
      *   Returns all the columns of the table
      *
      * @param  array $params (the params that indicates which rows will be returned)
-     * @return array
+     * @return \EasySQL\Src\Collection\Collection|boolean
      */
     public function get(array $params = null)
     {
@@ -62,7 +62,7 @@ class DAO implements DAOInterface
      *   Returns a certain column from the rows of the table
      *
      * @param  array $params (the params that indicates which rows will be returned)
-     * @return array
+     * @return \EasySQL\Src\Collection\Collection|boolean
      */
     public function value(array $params)
     {
@@ -74,7 +74,7 @@ class DAO implements DAOInterface
             $this->api->matchRequiredAction($required, $params, $this->table, $this->config);
         } catch (RequiredException $e) {
             print($e->getMessage());
-            return;
+            return false;
         }
 
         // Setup the sql query
@@ -99,6 +99,8 @@ class DAO implements DAOInterface
      *   Updates a column of the table
      *
      * @param array $params (the params that indicates which rows will be returned)
+     * 
+     * @return string|boolean
      */
     public function update(array $params)
     {
@@ -112,7 +114,7 @@ class DAO implements DAOInterface
             $this->api->matchRequiredAction($required, $params, $this->table, $this->config);
         } catch (RequiredException $e) {
             print($e->getMessage());
-            return;
+            return false;
         }
 
         $query = 'UPDATE '.$this->table.' SET '.$params['to_update'].' = ?';
@@ -132,6 +134,8 @@ class DAO implements DAOInterface
      *   Deletes a row of the table
      *
      * @param array $params (the params that indicates which rows will be returned)
+     *
+     * @return string|boolean
      */
     public function delete(array $params = null)
     {
@@ -155,6 +159,8 @@ class DAO implements DAOInterface
      *   Inserts a new row on the table
      *
      * @param array $params (the params that indicates which rows will be returned)
+     *
+     * @return string|boolean
      */
     public function insert(array $params)
     {
@@ -164,7 +170,7 @@ class DAO implements DAOInterface
             $this->api->matchRequired($this->config[4], $params, $this->table, $this->config);
         } catch (RequiredException $e) {
             print($e->getMessage());
-            return;
+            return false;
         }
 
         $query = 'INSERT INTO '.$this->table.' VALUES(';

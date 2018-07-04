@@ -25,7 +25,7 @@ class DatabaseSingleton
             self::$db = new \PDO($config[1].':host='.$config[2].';dbname='.$config[4], $config[3], $config[5]);
             self::$db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             self::$db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             echo 'Error!: '.$e->getMessage().'<br/>';
             die();
         }
@@ -37,7 +37,7 @@ class DatabaseSingleton
      *
      * @param array $config Database Configuration Array.
      *
-     * @return DatabaseSingleon $db The Database connection object.
+     * @return \PDO $db The Database connection object.
      */
     public static function getDB(array $config)
     {

@@ -51,10 +51,10 @@ class DatabaseDAO
     * Return an array containing all the columns from a table that can have a value of NULL
     * except those that can be NULL but have auto completed values
     *
-    * @param string $databse The database name.
+    * @param string $database The database name.
     * @param string $table The table name.
     *
-    * @return array $columns|void The array of the columns.
+    * @return array|boolean The array of the columns.
     */
     public function getNullableColumns(string $database, string $table)
     {
@@ -67,14 +67,14 @@ class DatabaseDAO
             $stmt->execute();
             $results            = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
             if (empty($results)) {
-                return;
+                return false;
             }
             $columns = $this->subtractAutoCompleted($results, $table);
 
             return $columns;
         } catch (\PDOException $e) {
             echo $e->getMessage();
-            return;
+            return false;
         }//end try
     }
 
@@ -85,7 +85,7 @@ class DatabaseDAO
      * @param string $database The database name.
      * @param string $table    The table name.
      *
-     * @return array $required|void The array of the required column names.
+     * @return array|boolean The array of the required column names.
      *
      * @throws PDOException Query execution error.
      */
@@ -97,14 +97,14 @@ class DatabaseDAO
             $stmt->execute();
             $results            = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
             if (empty($results)) {
-                return;
+                return false;
             }
             $required = $this->subtractAutoCompleted($results, $table);
 
             return $required;
         } catch (\PDOException $e) {
             echo $e->getMessage();
-            return;
+            return false;
         }//end try
     }//end getRequired()
 
@@ -116,14 +116,17 @@ class DatabaseDAO
     * @param array $columns The array containing the columns of the table.
     * @param string $table The name of the table.
     *
-    * @return array $subtracted The columns array after the subtraction of the auto completed columns.
+    * @return array|boolean The columns array after the subtraction of the auto completed columns.
     */
     private function subtractAutoCompleted(array $columns, string $table)
     {
 
-            $autos              = $this->getAutoCompleted($table);
-            $subtracted = [];
-            $autoCompleted = [];
+        $autos              = $this->getAutoCompleted($table);
+        if(empty($autos))
+            return false;
+
+        $subtracted = array();
+        $autoCompleted = array();
            
         foreach ($autos as $auto) {
             $autoCompleted[] = $auto['name'];
@@ -135,7 +138,7 @@ class DatabaseDAO
             }
         }
 
-            return $subtracted;
+        return $subtracted;
     }
 
 
@@ -144,14 +147,15 @@ class DatabaseDAO
      *
      * @param string $table The table name.
      *
-     * @return array $auto|void The array of the autocompleted columns.
+     * @return array|boolean The array of the autocompleted columns.
      *
      * @throws PDOException Query execution error.
      */
     public function getAutoCompleted(string $table)
     {
         try {
-            $required = [];
+            $auto = array();
+            $required = array();
 
             $query = 'show columns from '.$table;
             $sth = $this->db->prepare($query);
@@ -178,7 +182,7 @@ class DatabaseDAO
             return $auto;
         } catch (\PDOException $e) {
             echo $e->getMessage();
-            return;
+            return false;
         }//end try
     }//end getAutoCompleted()
 }

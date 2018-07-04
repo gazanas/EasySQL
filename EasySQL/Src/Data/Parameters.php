@@ -18,15 +18,14 @@ class Parameters
      * @param string $query  The query to be executed.
      * @param array  $params The parameters passed by the user.
      *
-     * @return array|void The prepared parameters for execution.
+     * @return array|null The prepared parameters for execution.
      */
     public function prepareParameters(string $query, $params)
     {
         $bindParams = array();
-        
-        if (is_array($params) === false || isset($params) === false || empty($params) === true) {
-            return;
-        }
+
+        if(is_array($params) === false || empty($params) === true)
+            return null;
 
         if (isset($params['condition']) === true && empty($params['condition']) === false) {
             unset($params['condition']);
@@ -107,7 +106,11 @@ class Parameters
         // Set the parameters array in order of the column fields.
         foreach ($params as $field => $param) {
             if (is_array($param) === true) {
-                $bindParams[] = array_values($param)[1];
+                if(isset(array_values($param)[1])) {
+                    $bindParams[] = array_values($param)[1];
+                } else {
+                    $bindParams[] = array_values($param)[0];
+                }
             } else {
                 $bindParams[] = $param;
             }

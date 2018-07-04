@@ -11,20 +11,20 @@ class SQL
     /**
      * The database configuration array
      *
-     * @var $config
+     * @var array $_config
      */
-    protected $config;
+    protected $_config;
 
     /**
      * The database connection object
      *
-     * @var $db
+     * @var \PDO $_db
      */
-    protected $db;
+    protected $_db;
 
     public $sets;
 
-    protected $parameters;
+    protected $_parameters;
 
 
     /**
@@ -49,7 +49,7 @@ class SQL
      * @param string $query  The SQL query to be executed.
      * @param array  $params The parameters passed by the user.
      *
-     * @return array $data The resulted database info array from theq query.
+     * @return array|boolean $data The resulted database info array from theq query.
      */
     public function fetchDBData(string $query, $params = [])
     {
@@ -85,7 +85,7 @@ class SQL
      * @param string $query  The query to be executed.
      * @param array  $params The parameters passed by the user.
      *
-     * @return Collection $collection|string The Collection of the data resulted from the query.
+     * @return Collection|string The Collection of the data resulted from the query.
      */
     public function executeQuery(string $query, $params = [])
     {

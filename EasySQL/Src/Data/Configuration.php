@@ -12,6 +12,7 @@ class Configuration
      **/
     public function getDatabaseConfig()
     {
+        $config = array();
         $dbIni = file_get_contents(dirname(__DIR__, 3).'/.env/database/config.ini');
 
         preg_match_all('/.+ =\> .+/', $dbIni, $matches);

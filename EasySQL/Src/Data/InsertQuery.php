@@ -110,6 +110,8 @@ class InsertQuery {
      */
     private function getRequiredParametersToInsert(array $allColumns, array $restColumns)
     {
+        $preparedParameter = array();
+        
         foreach ($allColumns as $key => $column) {
             if (array_key_exists($column, $restColumns) === false) {
                 if (empty(array_slice($restColumns, 0, $key)) === true) {

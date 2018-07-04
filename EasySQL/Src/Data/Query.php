@@ -24,7 +24,12 @@ class Query
     public function setUpQuery(string $query, array $params)
     {
         $query .= $this->simpleWhereClause($params);
-        $query  = $this->queryOptions($query, $params);
+
+        try {
+            $query  = $this->queryOptions($query, $params);
+        } catch (OptionsException $e) {
+            echo $e->getMessage();
+        }
 
         return $query;
     }
@@ -37,7 +42,7 @@ class Query
      *
      * @param array $params The parameters passed by the user call.
      *
-     * @return string|void The where clause of the SQL query to call.
+     * @return string|null The where clause of the SQL query to call.
      */
     public function simpleWhereClause(array $params)
     {
@@ -45,8 +50,8 @@ class Query
             unset($params[$bound]);
         }
 
-        if (is_array($params) === false || isset($params) === false || empty($params) === true) {
-            return;
+        if (is_array($params) === false || empty($params) === true) {
+            return null;
         }
 
         $sql = ' WHERE ';
@@ -145,18 +150,13 @@ class Query
     public function queryOptions(string $query, array $params)
     {
         if (isset($params['options']) === true && is_array($params['options']) === true) {
-            try {
-                if ($this->sets->checkOptions($params['options']) === true) {
-                    foreach ($params['options'] as $option => $value) {
-                        $option = preg_replace('/order/', 'order by', $option);
-                        $query .= ' '.$option.' '.$value;
-                    }
-                } else {
-                    throw new OptionsException('Option is not correct');
+            if ($this->sets->checkOptions($params['options']) === true) {
+                foreach ($params['options'] as $option => $value) {
+                    $option = preg_replace('/order/', 'order by', $option);
+                    $query .= ' '.$option.' '.$value;
                 }
-            } catch (OptionsException $e) {
-                echo $e->getMessage();
-                return;
+            } else {
+                throw new OptionsException('Option is not correct');
             }
         }
 
