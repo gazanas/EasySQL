@@ -1,11 +1,13 @@
 <?php
 
-require_once 'connectSingleton.php';
+require_once 'Connection.php';
 require_once 'SQLBuilder.php';
 
 $it = new DirectoryIterator('Schemata/');
 
-$db = Build\connectSingleton::getConnection($argv);
+$connection = new Build\Connection($argv);
+
+$db = $connection->getConnection();
 
 $xmlTosql = new Build\SQLBuilder($db);
 foreach ($it as $file) {

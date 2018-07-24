@@ -1,6 +1,6 @@
 <?php
 
-require_once 'connectSingleton.php';
+require_once 'Connection.php';
 
 $dbIni = file_get_contents(dirname(__DIR__).'/.env/database/config.ini');
 
@@ -12,7 +12,9 @@ foreach ($matches[0] as $index => $match) {
     $config[$index] = $matchArray[1];
 }
 
-$db = Build\connectSingleton::getConnection($config);
+$connection = Build\Connection($config);
+
+$db = $connection->getConnection();
 
 $db->query('SET foreign_key_checks = 0');
 $result = $db->query('SHOW TABLES');

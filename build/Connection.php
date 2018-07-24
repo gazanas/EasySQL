@@ -7,7 +7,7 @@ namespace Build;
  *
  * @version 0.1.0
  **/
-class connectSingleton
+class Connection
 {
 
      /**
@@ -15,7 +15,7 @@ class connectSingleton
       *
       * @var $db
       */
-    public static $db;
+    public $db;
 
 
     /**
@@ -27,7 +27,7 @@ class connectSingleton
     {
         try {
             // Connect to database or throw error message.
-            self::$db = new \PDO($config[1].':host='.$config[2].';dbname='.$config[4], $config[3], $config[5]);
+            $this->db = new \PDO($config[1].':host='.$config[2].';dbname='.$config[4], $config[3], $config[5]);
         } catch (PDOException $e) {
             echo 'Error!: '.$e->getMessage().'<br/>';
             die();
@@ -38,16 +38,10 @@ class connectSingleton
     /**
      * Get the database connection
      *
-     * @param array $config Database Configuration Array.
-     *
-     * @return DatabaseSingleon $db The Database connection object.
+     * @return PDO $db The Database connection object.
      */
-    public static function getConnection(array $config)
+    public function getConnection()
     {
-        if (isset(self::$db) === false) {
-            $db = new connectSingleton($config);
-        }
-
-        return self::$db;
+        return $this->db;
     }//end getConnection()
 }//end class
