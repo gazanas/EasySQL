@@ -19,24 +19,11 @@ final class SetsTest extends TestCase
     {
         ob_start();
 
-        $configuration = new Data\Configuration();
+        $database = new Connection();
 
-        $this->config = $configuration->getDatabaseConfig();
+        $database->createDatabase();
 
-        $this->config[4] = 'test';
-
-        $this->db = new \PDO($this->config[1].':host='.$this->config[2].';', $this->config[3], $this->config[5]);
-
-        $this->db->query('CREATE DATABASE test');
-
-        $this->db = null;
-
-        $this->db = new \PDO(
-            $this->config[1].':host='.$this->config[2].';dbname='
-            .$this->config[4],
-            $this->config[3],
-            $this->config[5]
-        );
+        $this->db = $database->getDB();
 
         $this->db->query(
             "CREATE TABLE `test_users` (
@@ -61,19 +48,17 @@ final class SetsTest extends TestCase
             "
         );
 
-        $this->db = null;
-
     }//end setUp()
 
 
     public function tearDown()
     {
-        $this->db = new \PDO($this->config[1].':host='.$this->config[2].';', $this->config[3], $this->config[5]);
-
-        $this->db->query('DROP DATABASE test');
-
         $this->db = null;
+        
+        $database = new Connection();
 
+        $database->dropDatabase();
+        
         ob_end_clean();
     }//end tearDown()
 

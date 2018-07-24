@@ -10,10 +10,10 @@ class DatabaseDAO
     protected $sql;
     protected $db;
 
-    public function __construct(array $config)
+    public function __construct(\PDO $db)
     {
-        $this->db          = Data\DatabaseSingleton::getDB($config);
-        $this->sql = new Data\SQL($config);
+        $this->db          = $db;
+        $this->sql = new Data\SQL($this->db);
     }
 
     /**
@@ -23,11 +23,10 @@ class DatabaseDAO
      *
      * @return array $result The array with the names of the tables.
      */
-    public function getTables(string $database)
+    public function getTables()
     {
-        $query      = 'SELECT table_name FROM information_schema.tables WHERE table_schema=?';
-        $params[] = $database;
-        $tables   = $this->sql->fetchDBData($query, $params);
+        $query      = 'SHOW TABLES';
+        $tables   = $this->sql->fetchDBData($query, array());
         return $tables;
     }//end getTables()
 
@@ -56,8 +55,9 @@ class DatabaseDAO
     *
     * @return array|boolean The array of the columns.
     */
-    public function getNullableColumns(string $database, string $table)
+    public function getNullableColumns(string $table)
     {
+        $database = $this->db->query('select database()')->fetchColumn();
         try {
             $columns = [];
 
@@ -89,8 +89,9 @@ class DatabaseDAO
      *
      * @throws PDOException Query execution error.
      */
-    public function getRequiredColumns(string $database, string $table)
+    public function getRequiredColumns(string $table)
     {
+        $database = $this->db->query('select database()')->fetchColumn();
         try {
             $query      = 'SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE '."TABLE_SCHEMA='".$database."' AND table_name='".$table."' AND IS_NULLABLE='NO'";
             $stmt     = $this->db->prepare($query);

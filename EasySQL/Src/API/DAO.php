@@ -8,11 +8,11 @@ use EasySQL\Src\Data\QueryFactory as QueryFactory;
 class DAO implements DAOInterface
 {
 
+    protected $db;
+     
     protected $sql;
 
     protected $table;
-
-    protected $config;
 
     protected $api;
 
@@ -21,11 +21,11 @@ class DAO implements DAOInterface
     protected $query;
 
 
-    public function __construct(array $config, string $table)
+    public function __construct(string $table, \PDO $db)
     {
-        $this->config = $config;
-        $this->sql    = new SQL($this->config);
-        $this->api    = new API($this->config);
+        $this->db = $db;
+        $this->sql    = new SQL($this->db);
+        $this->api    = new API();
 
         $this->queryFactory  = new QueryFactory();
 
@@ -71,7 +71,7 @@ class DAO implements DAOInterface
         $required = ['return'];
         // Check if user passed the required "return" parameter
         try {
-            $this->api->matchRequiredAction($required, $params, $this->table, $this->config);
+            $this->api->matchRequiredAction($required, $params, $this->table);
         } catch (RequiredException $e) {
             print($e->getMessage());
             return false;
@@ -111,7 +111,7 @@ class DAO implements DAOInterface
             'updated',
         ];
         try {
-            $this->api->matchRequiredAction($required, $params, $this->table, $this->config);
+            $this->api->matchRequiredAction($required, $params, $this->table);
         } catch (RequiredException $e) {
             print($e->getMessage());
             return false;
@@ -167,7 +167,7 @@ class DAO implements DAOInterface
         $this->query  = $this->queryFactory->getQueryType('insert');
 
         try {
-            $this->api->matchRequired($this->config[4], $params, $this->table, $this->config);
+            $this->api->matchRequired($params, $this->table);
         } catch (RequiredException $e) {
             print($e->getMessage());
             return false;
@@ -175,7 +175,7 @@ class DAO implements DAOInterface
 
         $query = 'INSERT INTO '.$this->table.' VALUES(';
 
-        $query .= $this->query->setUpInsertQuery($this->api->dbinfo->getColumns($this->table), $params, $this->api->dbinfo->getAutoCompleted($this->table), $this->api->dbinfo->getNullableColumns($this->config[4], $this->table));
+        $query .= $this->query->setUpInsertQuery($this->api->dbinfo->getColumns($this->table), $params, $this->api->dbinfo->getAutoCompleted($this->table), $this->api->dbinfo->getNullableColumns($this->table));
 
         try {
             return $this->sql->executeQuery($query, $params);

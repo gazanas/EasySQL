@@ -5,11 +5,11 @@ namespace EasySQL\Src\Data;
 class Parameters
 {
 
-    protected $config;
+    protected $db;
 
-    public function __construct(array $config)
+    public function __construct(\PDO $db)
     {
-        $this->config = $config;
+        $this->db = $db;
     }
 
     /**
@@ -64,7 +64,7 @@ class Parameters
 
         $bindParams = array();
 
-        $dbinfo = new \EasySQL\Src\API\DatabaseDAO($this->config);
+        $dbinfo = new \EasySQL\Src\API\DatabaseDAO($this->db);
 
         // Get the columns of table.
         $fields = $dbinfo->getColumns($tableName);

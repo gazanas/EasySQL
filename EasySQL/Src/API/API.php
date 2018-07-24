@@ -7,13 +7,7 @@ use EasySQL\Src\Data as Data;
 class API extends APICall
 {
 
-
-    /**
-     * Database Configuration Table.
-     *
-     * @var $config
-     **/
-    public $config;
+    protected $db;
 
     public $dbinfo;
 
@@ -25,16 +19,16 @@ class API extends APICall
      *
      * @param array $config The Database configuration array.
      */
-    public function __construct($config = null)
+    public function __construct($db = NULL)
     {
-        if ($config == null) {
-            $configuration = new Data\Configuration();
-            $this->config     = $configuration->getDatabaseConfig();
+        if($db == NULL) {
+            $database = new Data\Connection();
+            $this->db = $database->getDB();
         } else {
-            $this->config = $config;
+            $this->db = $db;
         }
-        $this->dbinfo = new DatabaseDAO($this->config);
-        $this->sets = new Data\Sets($this->dbinfo->getTables($this->config[4]));
+        $this->dbinfo = new DatabaseDAO($this->db);
+        $this->sets = new Data\Sets($this->dbinfo->getTables());
     }
 
 
@@ -75,7 +69,7 @@ class API extends APICall
         $dir             = $this->_searchClassDir($class);
         $namespacedClass = 'EasySQL\\Src\\API\\DAOs\\'.$class;
         $function        = $action;
-        $object          = new $namespacedClass($this->config, $set);
+        $object          = new $namespacedClass($set, $this->db);
         $data            = $object->$function($params);
         return $data;
     }

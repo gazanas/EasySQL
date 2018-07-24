@@ -4,11 +4,9 @@
 
 	$api = new EasySQL\Src\API\API();
 
-	$config = $api->config;
+	$sets = new EasySQL\Src\Data\Sets();
 
-	$sql = new EasySQL\Src\Data\SQL($config);
-
-	$tables = $api->dbinfo->getTables($config[4]);
+	$tables = $api->dbinfo->getTables();
 	rsort($tables);
 
 	$fields = array();
@@ -19,11 +17,11 @@
 	* Set the values of the array to a new array so indexing will be from 0-n (n the length of the array)
 	*/
 
-	$actions = array_values(array_unique(array_map('strtoupper', $sql->sets->actionSet)));
+	$actions = array_values(array_unique(array_map('strtoupper', $sets->actionSet)));
 
-	$options = array_values(array_unique(array_map('strtoupper', $sql->sets->options)));
+	$options = array_values(array_unique(array_map('strtoupper', $sets->options)));
 
-	$operators = array_values(array_unique(array_map('strtoupper', $sql->sets->operators)));
+	$operators = array_values(array_unique(array_map('strtoupper', $sets->operators)));
 
 	$columns = array();
 

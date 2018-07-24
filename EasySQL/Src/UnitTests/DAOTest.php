@@ -22,24 +22,11 @@ class DAOTest extends TestCase
     {
         ob_start(); 
 
-        $configuration = new Data\Configuration();
+        $database = new Connection();
 
-        $this->config = $configuration->getDatabaseConfig();
+        $database->createDatabase();
 
-        $this->config[4] = 'test';
-
-        $this->db = new \PDO($this->config[1].':host='.$this->config[2].';', $this->config[3], $this->config[5]);
-
-        $this->db->query('CREATE DATABASE test');
-
-        $this->db = null;
-
-        $this->db = new \PDO(
-            $this->config[1].':host='.$this->config[2].';dbname='
-            .$this->config[4],
-            $this->config[3],
-            $this->config[5]
-        );
+        $this->db = $database->getDB();
 
         $this->db->query(
             "CREATE TABLE `test_users` (
@@ -64,19 +51,17 @@ class DAOTest extends TestCase
             "
         );
 
-        $this->db = null;
-
     }//end setUp()
 
 
     public function tearDown()
     {
-        $this->db = new \PDO($this->config[1].':host='.$this->config[2].';', $this->config[3], $this->config[5]);
-
-        $this->db->query('DROP DATABASE test');
-
         $this->db = null;
 
+        $database = new Connection();
+
+        $database->dropDatabase();
+        
         ob_end_clean();
 
     }//end tearDown()
@@ -84,7 +69,7 @@ class DAOTest extends TestCase
 
     public function testCorrectDAOCallReturnsACollectionObject()
     {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
 
         $data = $dao->get();
 
@@ -94,7 +79,7 @@ class DAOTest extends TestCase
 
     public function testGetCollectionOfAllTableRows()
     {
-        $dao  = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao  = new API\DAOs\Test_Users('test_users', $this->db);
         $data = $dao->get();
 
         $expected = new Collection(
@@ -126,7 +111,7 @@ class DAOTest extends TestCase
 
     public function testGetCollectionOfCertainTableRows()
     {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
 
         $data = $dao->get(array('id' => 1));
 
@@ -147,7 +132,7 @@ class DAOTest extends TestCase
     }
 
     public function testGetCollectionReturnsFalseWhenWrongParameterPassed() {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
 
         $data = $dao->get(array('<invalid parameter>' => 1));
 
@@ -157,7 +142,7 @@ class DAOTest extends TestCase
 
     public function testDAOGetsOneValueFromTheTableRows()
     {
-        $dao      = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao      = new API\DAOs\Test_Users('test_users', $this->db);
         $data     = $dao->value(array('return' => 'username', 'id' => 1));
 
         $expected = new Collection(
@@ -172,16 +157,16 @@ class DAOTest extends TestCase
 
     public function testDAOReturnsNullWhenValueActionParameterIsMissing()
     {
-        $dao  = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao  = new API\DAOs\Test_Users('test_users', $this->db);
         $data = $dao->value(array('id' => 1));
-        $this->assertNull($data);
+        $this->assertFalse($data);
 
     }//end testDAOReturnsNullWhenValueActionParameterIsMissing()
 
 
     public function testDAOUpdatesOneTableValue()
     {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
         $dao->update(['to_update' => 'username', 'updated' => 'updated_root', 'id' => 1]);
 
         $value = $dao->value(['return' => 'username', 'id' => 1]);
@@ -199,7 +184,7 @@ class DAOTest extends TestCase
 
     public function testDAOUpdatesAllTableRows()
     {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
         $dao->update(['to_update' => 'is_active', 'updated' => 1]);
 
         $data = $dao->get();
@@ -213,7 +198,7 @@ class DAOTest extends TestCase
 
     public function testDAOReturnsFalseWhenUpdatedValueShouldBeUnique()
     {
-        $dao  = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao  = new API\DAOs\Test_Users('test_users', $this->db);
         $data = $dao->update(['to_update' => 'username', 'updated' => 'root']);
         $this->assertFalse($data);
 
@@ -222,28 +207,28 @@ class DAOTest extends TestCase
 
     public function testDAOReturnsNullWhenUpdateActionParametersAreMissing()
     {
-        $dao  = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao  = new API\DAOs\Test_Users('test_users', $this->db);
         $data = $dao->update(['to_update' => 'username']);
-        $this->assertNull($data);
+        $this->assertFalse($data);
 
     }//end testDAOReturnsNullWhenUpdateActionParametersAreMissing()
 
 
     public function testDAODeletesOneTableRow()
     {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
         $dao->delete(['id' => 1]);
 
         $value = $dao->value(['id' => 1]);
 
-        $this->assertNull($value);
+        $this->assertFalse($value);
 
     }//end testDAODeletesOneTableRow()
 
 
     public function testDAODeletesAllTableRows()
     {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
 
         $dao->delete();
 
@@ -258,7 +243,7 @@ class DAOTest extends TestCase
 
     public function testDAOInsertNewRow()
     {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
 
         $dao->insert(
             [
@@ -284,7 +269,7 @@ class DAOTest extends TestCase
     }
 
     public function testInsertReturnsFalseIfRequiredColumnValueIsMissing() {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
 
         $data = $dao->insert(
             [
@@ -296,11 +281,11 @@ class DAOTest extends TestCase
             ]
         );
 
-        $this->assertNull($data);
+        $this->assertFalse($data);
     }
 
     public function testInsertDuplicateValueOnAUniqueColumnReturnsFalse() {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
 
         $data = $dao->insert(
             [
@@ -319,7 +304,7 @@ class DAOTest extends TestCase
 
     public function testDAOReturnsNullWhenInsertActionParametersAreMissing()
     {
-        $dao = new API\DAOs\Test_Users($this->config, 'test_users');
+        $dao = new API\DAOs\Test_Users('test_users', $this->db);
 
         $data = $dao->insert(
             [
@@ -331,7 +316,7 @@ class DAOTest extends TestCase
             ]
         );
 
-        $this->assertNull($data);
+        $this->assertFalse($data);
 
     }//end testDAOReturnsNullWhenInsertActionParametersAreMissing()
 

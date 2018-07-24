@@ -9,13 +9,6 @@ class SQL
 {
 
     /**
-     * The database configuration array
-     *
-     * @var array $_config
-     */
-    protected $_config;
-
-    /**
      * The database connection object
      *
      * @var \PDO $_db
@@ -26,20 +19,11 @@ class SQL
 
     protected $_parameters;
 
-
-    /**
-     * Construct the sql part of the api
-     *
-     * @param array $config The database configuration array.
-     *
-     * @return void
-     */
-    public function __construct(array $config)
+    public function __construct(\PDO $db)
     {
-        $this->_config      = $config;
-        $this->_db          = DatabaseSingleton::getDB($this->_config);
+        $this->_db          = $db;
         $this->sets              = new Sets();
-        $this->_parameters = new Parameters($this->_config);
+        $this->_parameters = new Parameters($this->_db);
     }//end __construct()
 
 

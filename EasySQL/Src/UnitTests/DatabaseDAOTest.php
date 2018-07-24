@@ -21,24 +21,11 @@ final class DatabaseInfoTest extends TestCase
     {
         ob_start(); 
 
-        $configuration = new Data\Configuration();
+        $database = new Connection();
 
-        $this->config = $configuration->getDatabaseConfig();
+        $database->createDatabase();
 
-        $this->config[4] = 'test';
-
-        $this->db = new \PDO($this->config[1].':host='.$this->config[2].';', $this->config[3], $this->config[5]);
-
-        $this->db->query('CREATE DATABASE test');
-
-        $this->db = null;
-
-        $this->db = new \PDO(
-            $this->config[1].':host='.$this->config[2].';dbname='
-            .$this->config[4],
-            $this->config[3],
-            $this->config[5]
-        );
+        $this->db = $database->getDB();
 
         $this->db->query(
             "CREATE TABLE `test_users` (
@@ -63,25 +50,23 @@ final class DatabaseInfoTest extends TestCase
             "
         );
 
-        $this->db = null;
-
     }//end setUp()
 
 
     public function tearDown()
     {
-        $this->db = new \PDO($this->config[1].':host='.$this->config[2].';', $this->config[3], $this->config[5]);
-
-        $this->db->query('DROP DATABASE test');
-
         $this->db = null;
 
+        $database = new Connection();
+
+        $database->dropDatabase();
+        
         ob_end_clean();
 
     }//end tearDown()
 
     public function testGetTables() {
-    	$dbinfo = new API\DatabaseDAO($this->config);
+    	$dbinfo = new API\DatabaseDAO($this->db);
 
     	$tables = $dbinfo->getTables($this->config[4]);
 
@@ -93,7 +78,7 @@ final class DatabaseInfoTest extends TestCase
     }
 
     public function testGetColumns() {
-    	$dbinfo = new API\DatabaseDAO($this->config);
+    	$dbinfo = new API\DatabaseDAO($this->db);
 
     	$columns = $dbinfo->getColumns('test_users');
 
@@ -112,9 +97,9 @@ final class DatabaseInfoTest extends TestCase
     }
 
     public function testGetColumnsThatCanHaveNullAsValue() {
-    	$dbinfo = new API\DatabaseDAO($this->config);
+    	$dbinfo = new API\DatabaseDAO($this->db);
 
-    	$columns = $dbinfo->getNullableColumns($this->config[4], 'test_users');
+    	$columns = $dbinfo->getNullableColumns('test_users');
 
     	$expected = array(
     		'created_at' => 'created_at'
@@ -124,17 +109,17 @@ final class DatabaseInfoTest extends TestCase
     }
 
     public function testReturnNullWhenTableNamePassedDoesNotExist() {
-        $dbinfo = new API\DatabaseDAO($this->config);
+        $dbinfo = new API\DatabaseDAO($this->db);
 
-        $columns = $dbinfo->getNullableColumns($this->config[4], '<invalide data set>');
+        $columns = $dbinfo->getNullableColumns('<invalide data set>');
 
-        $this->assertNull($columns);
+        $this->assertFalse($columns);
     }
 
     public function testGetNotNullableColumns() {
-    	$dbinfo = new API\DatabaseDAO($this->config);
+    	$dbinfo = new API\DatabaseDAO($this->db);
 
-    	$required = $dbinfo->getRequiredColumns($this->config[4], 'test_users');
+    	$required = $dbinfo->getRequiredColumns('test_users');
 
     	$expected = array(
     		'username' => 'username',
@@ -148,7 +133,7 @@ final class DatabaseInfoTest extends TestCase
     }
 
     public function testGetColumnsWhichHaveAutoCompletedValues() {
-    	$dbinfo = new API\DatabaseDAO($this->config);
+    	$dbinfo = new API\DatabaseDAO($this->db);
 
     	$autos = $dbinfo->getAutoCompleted('test_users');
 
@@ -167,10 +152,10 @@ final class DatabaseInfoTest extends TestCase
     }
 
     public function testReturnNullIfTableNamePassedDoesNotExist() {
-        $dbinfo = new API\DatabaseDAO($this->config);
+        $dbinfo = new API\DatabaseDAO($this->db);
 
         $autos = $dbinfo->getAutoCompleted('<invalid data set>');
 
-        $this->assertNull($autos);
+        $this->assertFalse($autos);
     }
 }

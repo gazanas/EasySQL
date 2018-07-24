@@ -14,15 +14,14 @@ class APICall
      * @param string $database The database name.
      * @param array  $params   The array of the actual parameters passed by the user.
      * @param string $table    The table name.
-     * @param array  $config   The Database Configuration.
      *
      * @return boolean
      *
      * @throws RequiredException The required parameters were not found.
      */
-    public function matchRequired(string $database, array $params, string $table, array $config)
+    public function matchRequired(array $params, string $table)
     {
-        $required = $this->dbinfo->getRequiredColumns($database, $table);
+        $required = $this->dbinfo->getRequiredColumns($table);
 
         if (empty(array_diff_key($required, $params)) === false) {
             $error = $this->setUpError($required, $params);
@@ -40,13 +39,12 @@ class APICall
      * @param array  $required The required action parameter for the query.
      * @param array  $params   The params passed by the user.
      * @param string $table    The name of the table.
-     * @param array  $config   The database configuration.
      *
      * @return boolean
      *
      * @throws RequiredException The required action parameter was not found.
      */
-    public function matchRequiredAction(array $required, array $params, string $table, array $config)
+    public function matchRequiredAction(array $required, array $params, string $table)
     {
         
         $swappedRequired = [];
