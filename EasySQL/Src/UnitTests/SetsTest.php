@@ -48,7 +48,7 @@ final class SetsTest extends TestCase
             "
         );
 
-    }//end setUp()
+    }
 
 
     public function tearDown()
@@ -60,7 +60,7 @@ final class SetsTest extends TestCase
         $database->dropDatabase();
         
         ob_end_clean();
-    }//end tearDown()
+    }
 
     public function testReturnTrueWhenTableNameIsInTheDataSet()
     {
@@ -84,7 +84,7 @@ final class SetsTest extends TestCase
             $sets->checkActionSet('get')
         );
 
-    }//end testReturnTrueWhenActionIsInTheActionSet()
+    }
 
 
     public function testThrowExceptionWhenActionIsInTheActionSet()
@@ -93,6 +93,6 @@ final class SetsTest extends TestCase
         $this->expectException(Data\ActionException::class);
         $sets->checkActionSet('invalid_action');
 
-    }//end testThrowExceptionWhenActionIsInTheActionSet()
+    }
 
-}//end class
+}

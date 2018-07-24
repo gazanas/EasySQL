@@ -16,10 +16,10 @@ class Query
     /**
      * Set up the where clause and the options clause of an SQL query
      *
-     * @param string $query  The sql query
-     * @param array  $params The parameters passed by the users
+     * @param string $query     The query to be executed without the where clause.
+     * @param array  $params    The parameters array passed by the user.
      *
-     * @return string $query The finished query to be executed
+     * @return string $query    The finished query to be executed including the where clause.
      */
     public function setUpQuery(string $query, array $params)
     {
@@ -40,9 +40,9 @@ class Query
      * in a where clause where all conditions are equalities and are
      * connected with an AND expression.
      *
-     * @param array $params The parameters passed by the user call.
-     *
-     * @return string|null The where clause of the SQL query to call.
+     * @param array $params     The parameters array passed by the user.
+     * 
+     * @return string|null      The where clause of the SQL query.
      */
     public function simpleWhereClause(array $params)
     {
@@ -69,12 +69,13 @@ class Query
     /**
      * Set up the where clause of the query for each parameter passed
      *
-     * @param string  $query  The SQL query.
-     * @param integer $i      The index of the param element in the parameters array.
-     * @param array   $params The parameters array.
-     * @param string  $key    The key of the traversed value from the params array.
+     * @param string  $query    The SQL query to be executed.
+     * @param integer $i        A counter of the iterations of the parameters array.
+     * @param array   $params   The parameters array passed by the user.
+     * @param string  $key      The key of the traversed value from the parameters array. If the value is not an array
+     *                          then the key is the parameter name.
      *
-     * @return $string $sql The SQL query containing the where clause.
+     * @return $string $sql     The SQL query containing the where clause.
      */
     private function setUpWhereClause(string $query, int $i, array $params, string $key)
     {
@@ -120,10 +121,10 @@ class Query
      * If the condition array is passed, setup the condition between
      * each statement of the where clause.
      *
-     * @param array   $params The parameters array passed by the user.
-     * @param integer $i      The index of the traversed value of params array.
+     * @param array   $params       The parameters array passed by the user.
+     * @param integer $i            A counter of the iterations of the parameters array.
      *
-     * @return string $condition The condition that connects two statements e.g. (AND, OR).
+     * @return string $condition    The condition that connects two statements e.g. (AND, OR).
      */
     private function setUpCondition(array $params, int $i)
     {
@@ -140,10 +141,10 @@ class Query
     /**
      * Setup the options of the query
      *
-     * @param string $query  The query to be parsed for available options.
-     * @param array  $params The params passed by the user.
+     * @param string $query     The query string to be parsed for available options.
+     * @param array  $params    The parameters array passed by the user.
      *
-     * @return string $query The query containing the options.
+     * @return string $query    The query including the options e.g. (LIMIT, ORDER BY).
      *
      * @throws OptionsException Option does not exist in options set.
      */

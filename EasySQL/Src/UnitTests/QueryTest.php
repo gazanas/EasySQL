@@ -50,7 +50,7 @@ final class QueryTest extends TestCase
             "
         );
 
-    }//end setUp()
+    }
 
 
     public function tearDown()
@@ -63,7 +63,7 @@ final class QueryTest extends TestCase
         
         ob_end_clean();
 
-    }//end tearDown()
+    }
 
     public function testSetUpWhereClauseOfTheQueryFromTheParametersArrayPassed()
     {
@@ -103,7 +103,7 @@ final class QueryTest extends TestCase
 
         $this->assertSame($options, $expected);
 
-    }//end testReturnTrueWhenActionIsInTheActionSet()
+    }
 
     public function testReturnNullIfTheOptionPassedIsNotInTheOptionsSet() {
         $query = new Data\Query();
@@ -158,4 +158,4 @@ final class QueryTest extends TestCase
         $this->assertSame($insert, $expected);
     }
 
-}//end class
+}

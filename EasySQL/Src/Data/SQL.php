@@ -24,16 +24,16 @@ class SQL
         $this->_db          = $db;
         $this->sets              = new Sets();
         $this->_parameters = new Parameters($this->_db);
-    }//end __construct()
+    }
 
 
     /**
      * Executes Query to fetch table names
      *
-     * @param string $query  The SQL query to be executed.
-     * @param array  $params The parameters passed by the user.
+     * @param string $query         The SQL query to be executed.
+     * @param array  $params        The parameters array passed by the user.
      *
-     * @return array|boolean $data The resulted database info array from theq query.
+     * @return array|boolean $data  The resulted database info array from theq query.
      */
     public function fetchDBData(string $query, $params = [])
     {
@@ -59,15 +59,15 @@ class SQL
         } catch (\PDOException $e) {
             echo 'Prepare failed: '.$e->getMessage();
             return false;
-        }//end try
-    }//end fetchDBData()
+        }
+    }
 
 
     /**
      * Executes a query
      *
-     * @param string $query  The query to be executed.
-     * @param array  $params The parameters passed by the user.
+     * @param string $query     The SQL query to be executed.
+     * @param array  $params    The parameters array passed by the user.
      *
      * @return Collection|string The Collection of the data resulted from the query.
      */
@@ -110,5 +110,5 @@ class SQL
         }
 
         return $collection;
-    }//end executeQuery()
-}//end class
+    }
+}

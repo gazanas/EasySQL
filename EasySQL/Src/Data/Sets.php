@@ -94,7 +94,7 @@ class Sets
     /**
      *   Checks if the set provided is one of the database tables
      *
-     * @param string $set The name of the Data Set.
+     * @param string $set   The name of the Data Set.
      *
      * @return boolean
      *
@@ -107,13 +107,13 @@ class Sets
         } else {
             throw new SetException('The requested '.$set.' data set can not be found.');
         }
-    }//end checkDataSet()
+    }
 
 
     /**
      *   Checks if the action provided is a valid action
      *
-     * @param string $action Action to be executed by the api.
+     * @param string $action    Action to be executed by the api.
      *
      * @return boolean
      *
@@ -126,12 +126,12 @@ class Sets
         } else {
             throw new ActionException('The requested action '.$action.' could not be performed.');
         }
-    }//end checkActionSet()
+    }
 
     /**
      * Checks whether the option exists in the options set
      *
-     * @param array $params The parameters passed by the user.
+     * @param array $params     The parameters array passed by the user.
      *
      * @return boolean
      */
@@ -147,5 +147,5 @@ class Sets
         }
 
         return $flag;
-    }//end _check_options()
+    }
 }

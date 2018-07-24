@@ -49,7 +49,7 @@ final class APITest extends TestCase
             "
         );
 
-    }//end setUp()
+    }
 
 
     public function tearDown()
@@ -62,7 +62,7 @@ final class APITest extends TestCase
 
         ob_end_clean();
 
-    }//end tearDown()
+    }
 
     public function testValidAPICallReturnsTheCorrectData() {
 
@@ -121,4 +121,4 @@ final class APITest extends TestCase
         $this->assertFalse($data);
     }
 
-}//end class
+}

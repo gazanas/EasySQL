@@ -51,7 +51,7 @@ class DAOTest extends TestCase
             "
         );
 
-    }//end setUp()
+    }
 
 
     public function tearDown()
@@ -64,7 +64,7 @@ class DAOTest extends TestCase
         
         ob_end_clean();
 
-    }//end tearDown()
+    }
 
 
     public function testCorrectDAOCallReturnsACollectionObject()
@@ -152,7 +152,7 @@ class DAOTest extends TestCase
 
         $this->assertEquals($expected, $data);
 
-    }//end testDAOGetsOneTableValue()
+    }
 
 
     public function testDAOReturnsNullWhenValueActionParameterIsMissing()
@@ -161,7 +161,7 @@ class DAOTest extends TestCase
         $data = $dao->value(array('id' => 1));
         $this->assertFalse($data);
 
-    }//end testDAOReturnsNullWhenValueActionParameterIsMissing()
+    }
 
 
     public function testDAOUpdatesOneTableValue()
@@ -179,7 +179,7 @@ class DAOTest extends TestCase
 
         $this->assertEquals($expected, $value);
 
-    }//end testDAOUpdatesOneTableValue()
+    }
 
 
     public function testDAOUpdatesAllTableRows()
@@ -193,7 +193,7 @@ class DAOTest extends TestCase
             $this->assertEquals($value['is_active'], 1);
         }
 
-    }//end testDAOUpdatesAllTableRows()
+    }
 
 
     public function testDAOReturnsFalseWhenUpdatedValueShouldBeUnique()
@@ -202,7 +202,7 @@ class DAOTest extends TestCase
         $data = $dao->update(['to_update' => 'username', 'updated' => 'root']);
         $this->assertFalse($data);
 
-    }//end testDAOReturnsFalseWhenUpdatedValueShouldBeUnique()
+    }
 
 
     public function testDAOReturnsNullWhenUpdateActionParametersAreMissing()
@@ -211,7 +211,7 @@ class DAOTest extends TestCase
         $data = $dao->update(['to_update' => 'username']);
         $this->assertFalse($data);
 
-    }//end testDAOReturnsNullWhenUpdateActionParametersAreMissing()
+    }
 
 
     public function testDAODeletesOneTableRow()
@@ -223,7 +223,7 @@ class DAOTest extends TestCase
 
         $this->assertFalse($value);
 
-    }//end testDAODeletesOneTableRow()
+    }
 
 
     public function testDAODeletesAllTableRows()
@@ -238,7 +238,7 @@ class DAOTest extends TestCase
 
         $this->assertEquals($data, $expected);
 
-    }//end testDAODeletesAllTableRows()
+    }
 
 
     public function testDAOInsertNewRow()
@@ -318,7 +318,5 @@ class DAOTest extends TestCase
 
         $this->assertFalse($data);
 
-    }//end testDAOReturnsNullWhenInsertActionParametersAreMissing()
-
-
-}//end class
+    }
+}

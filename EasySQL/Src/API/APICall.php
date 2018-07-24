@@ -11,17 +11,16 @@ class APICall
      *   Finds the parameters that are necessary for the API call and
      *   check if these exist in the parameters passed by the user, if not then throws a Required Exception
      *
-     * @param string $database The database name.
-     * @param array  $params   The array of the actual parameters passed by the user.
-     * @param string $table    The table name.
+     * @param array  $params    The parameters array passed by the user.
+     * @param string $set       Table name.
      *
      * @return boolean
      *
      * @throws RequiredException The required parameters were not found.
      */
-    public function matchRequired(array $params, string $table)
+    public function matchRequired(array $params, string $set)
     {
-        $required = $this->dbinfo->getRequiredColumns($table);
+        $required = $this->dbinfo->getRequiredColumns($set);
 
         if (empty(array_diff_key($required, $params)) === false) {
             $error = $this->setUpError($required, $params);
@@ -36,20 +35,20 @@ class APICall
     /**
      * The user api call contains the required action for the query
      *
-     * @param array  $required The required action parameter for the query.
-     * @param array  $params   The params passed by the user.
-     * @param string $table    The name of the table.
+     * @param array  $required  The required action parameter for the query.
+     * @param array  $params    The parameters array passed by the user.
+     * @param string $set       Table name
      *
      * @return boolean
      *
      * @throws RequiredException The required action parameter was not found.
      */
-    public function matchRequiredAction(array $required, array $params, string $table)
+    public function matchRequiredAction(array $required, array $params, string $set)
     {
         
         $swappedRequired = [];
         
-        $notRequired     = $this->dbinfo->getAutoCompleted($table);
+        $notRequired     = $this->dbinfo->getAutoCompleted($set);
         
         foreach ($notRequired as $item) {
             $key = array_search($item, $required);
@@ -74,8 +73,8 @@ class APICall
     /**
     * Set up the error message for the missing required parameters.
     *
-    * @param array $swappedRequired The required parameters array in swapped order.
-    * @param array $params The parameters array.
+    * @param array $swappedRequired     The required parameters array in swapped order.
+    * @param array $params              The parameters array passed by the user.
     *
     * @return string $error The error message.
     */

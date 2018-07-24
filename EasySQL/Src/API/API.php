@@ -17,7 +17,7 @@ class API extends APICall
      * Constructs the API Object and initializes the essential objects
      * for the API.
      *
-     * @param array $config The Database configuration array.
+     * @param PDO $db   The database object (it is only passed for unit testing)
      */
     public function __construct($db = NULL)
     {
@@ -37,9 +37,9 @@ class API extends APICall
      * to the associated data access object (DAO),
      * and returns the result of the call.
      *
-     * @param string $set      Table Name.
-     * @param string $action   Action To Perform.
-     * @param array  $params   Parameters.
+     * @param string $set      Table name.
+     * @param string $action   Action to perform.
+     * @param array  $params   The parameters array passed by the user.
      *
      * @return mixed $data Result Of The Performed Action.
      **/
@@ -78,7 +78,7 @@ class API extends APICall
     /**
      * Find the directory which contains the file with the desired class.
      *
-     * @param string $class Class Name.
+     * @param string $class     Class Name.
      *
      * @return string $directory Directory of Class File.
      **/

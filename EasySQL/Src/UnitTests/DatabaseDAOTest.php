@@ -50,7 +50,7 @@ final class DatabaseInfoTest extends TestCase
             "
         );
 
-    }//end setUp()
+    }
 
 
     public function tearDown()
@@ -63,7 +63,7 @@ final class DatabaseInfoTest extends TestCase
         
         ob_end_clean();
 
-    }//end tearDown()
+    }
 
     public function testGetTables() {
     	$dbinfo = new API\DatabaseDAO($this->db);

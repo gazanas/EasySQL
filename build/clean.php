@@ -12,7 +12,7 @@ foreach ($matches[0] as $index => $match) {
     $config[$index] = $matchArray[1];
 }
 
-$connection = Build\Connection($config);
+$connection = new Build\Connection($config);
 
 $db = $connection->getConnection();
 

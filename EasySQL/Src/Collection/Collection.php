@@ -2,11 +2,6 @@
 
 namespace EasySQL\Src\Collection;
 
-/**
- * Collection Class
- *
- * @version 0.1.0
- **/
 class Collection implements \IteratorAggregate, \JsonSerializable
 {
 
@@ -66,20 +61,6 @@ class Collection implements \IteratorAggregate, \JsonSerializable
     {
         $this->{count((array) $this)} = $element;
     }
-
-
-    /**
-     * Turn an array to an StdClass object
-     *
-     * @param array $element The array element to convert.
-     *
-     * @return StdClass The StdClass object.
-     
-    private function arrayToObject(array $element)
-    {
-        return json_decode(json_encode((object) $element), false);
-    }
-*/
 
     /**
      * Delete an array element of the Collection object

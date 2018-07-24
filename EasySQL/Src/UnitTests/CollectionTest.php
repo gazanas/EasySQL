@@ -25,14 +25,14 @@ class CollectionTest extends TestCase
             ]
         );
 
-    }//end setUp()
+    }
 
 
     public function tearDown()
     {
         unset($this->collection);
 
-    }//end tearDown()
+    }
 
 
     public function testGetACollectionOfData()
@@ -46,7 +46,7 @@ class CollectionTest extends TestCase
 
         $this->assertEquals($data, $expected);
 
-    }//end testGetACollectionOfData()
+    }
 
 
     public function testThrowExceptionWhenCollectionIsEmpty()
@@ -57,7 +57,7 @@ class CollectionTest extends TestCase
 
         $expected->getCollection(0);
 
-    }//end testThrowExceptionWhenCollectionIsEmpty()
+    }
 
 
     public function testCountReturnsTheRightNumberOfArraysInACollection()
@@ -66,7 +66,7 @@ class CollectionTest extends TestCase
 
         $this->assertEquals(2, $count);
 
-    }//end testCountReturnsTheRightNumberOfArraysInACollection()
+    }
 
 
     public function testAddsANewArrayOfElementsToAnExistingCollection()
@@ -80,7 +80,7 @@ class CollectionTest extends TestCase
 
         $this->assertEquals($this->collection->getCollection(2), $expected);
 
-    }//end testAddsANewArrayOfElementsToAnExistingCollection()
+    }
 
 
     public function testDeletesAnExistingArrayOfElementsFromACollection()
@@ -91,7 +91,5 @@ class CollectionTest extends TestCase
 
         $this->assertEquals(1, $count);
 
-    }//end testDeletesAnExistingArrayOfElementsFromACollection()
-
-
-}//end class
+    }
+}

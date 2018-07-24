@@ -2,11 +2,6 @@
 
 namespace Build;
 
-/**
- * ConnectSingleton Class
- *
- * @version 0.1.0
- **/
 class Connection
 {
 
@@ -21,7 +16,7 @@ class Connection
     /**
      * Connect to the database.
      *
-     * @param array $config Database Configuration Array.
+     * @param array $config     Database Configuration Array.
      */
     public function __construct(array $config)
     {
@@ -32,16 +27,16 @@ class Connection
             echo 'Error!: '.$e->getMessage().'<br/>';
             die();
         }
-    }//end __construct()
+    }
 
 
     /**
      * Get the database connection
      *
-     * @return PDO $db The Database connection object.
+     * @return PDO $db  The Database connection object.
      */
     public function getConnection()
     {
         return $this->db;
-    }//end getConnection()
-}//end class
+    }
+}

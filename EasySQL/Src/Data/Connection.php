@@ -15,8 +15,6 @@ class Connection
 
     /**
      * Connect to the database.
-     *
-     * @param array $config Database Configuration Array.
      */
     public function __construct()
     {
@@ -35,7 +33,7 @@ class Connection
     /**
      * Reads the database configuration from the config.ini file
      *
-     * @return array $config Database Configuration.
+     * @return array $config    Database Configuration.
      **/
     private function getDatabaseConfig()
     {
@@ -51,15 +49,12 @@ class Connection
         }
 
         return $config;
-    }//end getDatabaseConfig()
-
+    }
 
     /**
      * Get the database connection
      *
-     * @param array $config Database Configuration Array.
-     *
-     * @return \PDO $db The Database connection object.
+     * @return \PDO $db     The Database connection object.
      */
     public function getDB()
     {

@@ -48,7 +48,7 @@ final class SQLSTest extends TestCase
             "
         );
 
-    }//end setUp()
+    }
 
 
     public function tearDown()
@@ -60,7 +60,7 @@ final class SQLSTest extends TestCase
         $database->dropDatabase();
         
         ob_end_clean();
-    }//end tearDown()
+    }
 
     public function testExecuteQueryReturnsCorrectCollection() {
         $sql = new Data\SQL($this->db);
@@ -97,5 +97,4 @@ final class SQLSTest extends TestCase
 
         $data = $sql->executeQuery($query, $params);
     }
-
-}//end class
+}

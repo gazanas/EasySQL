@@ -8,12 +8,12 @@ class InsertQuery {
      * Gets the parameters array for the insert query and sets up the
      * values clause from the values of this array.
      *
-     * @param array $allColumns  All the columns of the table.
-     * @param array $restColumns The columns that are not auto completed.
-     * @param array $autoColumns The array of all the columns that have auto completed values.
-     * @param array $nullabelColumns The array of all the columns that can have null value.
+     * @param array $allColumns         The names of all the columns of the table.
+     * @param array $restColumns        The names of all the columns that have not auto completed values.
+     * @param array $autoColumns        The names of all the columns that have auto completed values.
+     * @param array $nullabelColumns    The names of all the columns that can have null value.
      *
-     * @return string $query The insert query.
+     * @return string $query            The insert query.
      */
     public function setUpInsertQuery(array $allColumns, $restColumns, array $autoColumns, array $nullableColumns)
     {
@@ -54,11 +54,11 @@ class InsertQuery {
     /**
     * If a parameter is required but is not passed set it to NULL
     *
-    * @param array $params The parameters array.
-    * @param array $allColumns The array of all the tables columns.
-    * @param array $nullabelColumns The array of all the columns that can have null value.
+    * @param array $params              The parameters array passed by the user.
+    * @param array $allColumns          The array of all the tables columns.
+    * @param array $nullabelColumns     The array of all the columns that can have null value.
     *
-    * @return array The complete parameters array.
+    * @return array                     The complete parameters array.
     */
     public function setNotPassedParameters(array $params, array $allColumns, $nullableColumns)
     {
@@ -82,8 +82,8 @@ class InsertQuery {
     /**
     * Check if a parameter is of current_timestamp type.
     *
-    * @param string $field The column name.
-    * @param array $autoColumns The array of the auto completed columns.
+    * @param string $field          Column name.
+    * @param array $autoColumns     The names of the columns that have auto completed values.
     *
     * @return boolean
     */
@@ -103,10 +103,10 @@ class InsertQuery {
      * are auto_completed or nullable and gives them a value of NULL (string). Finally sets up the parameters array
      * for the insert value clause e.g. array('NULL', '?', '?', '?') say the first column is auto incremented.
      *
-     * @param array $allColumns  All the columns from a table.
-     * @param array $restColumns The columns that are not auto completed.
+     * @param array $allColumns             The names of all the columns of the table.
+     * @param array $restColumns            The name of all the columns that have not auto completed values.
      *
-     * @return array $preparedParameter An array that contains the prepared values of the insert values() clause.
+     * @return array $preparedParameter     An array that contains the prepared values of the insert values() clause.
      */
     private function getRequiredParametersToInsert(array $allColumns, array $restColumns)
     {

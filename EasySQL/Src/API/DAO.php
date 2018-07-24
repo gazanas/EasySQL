@@ -37,7 +37,8 @@ class DAO implements DAOInterface
     /**
      *   Returns all the columns of the table
      *
-     * @param  array $params (the params that indicates which rows will be returned)
+     * @param  array $params    The parameters array passed by the user.
+     *
      * @return \EasySQL\Src\Collection\Collection|boolean
      */
     public function get(array $params = null)
@@ -61,7 +62,8 @@ class DAO implements DAOInterface
     /**
      *   Returns a certain column from the rows of the table
      *
-     * @param  array $params (the params that indicates which rows will be returned)
+     * @param  array $params    The parameters array passed by the user.
+     *
      * @return \EasySQL\Src\Collection\Collection|boolean
      */
     public function value(array $params)
@@ -98,7 +100,7 @@ class DAO implements DAOInterface
     /**
      *   Updates a column of the table
      *
-     * @param array $params (the params that indicates which rows will be returned)
+     * @param array $params     The parameters array passed by the user.
      * 
      * @return string|boolean
      */
@@ -133,7 +135,7 @@ class DAO implements DAOInterface
     /**
      *   Deletes a row of the table
      *
-     * @param array $params (the params that indicates which rows will be returned)
+     * @param array $params     The parameters array passed by the user.
      *
      * @return string|boolean
      */
@@ -158,7 +160,7 @@ class DAO implements DAOInterface
     /**
      *   Inserts a new row on the table
      *
-     * @param array $params (the params that indicates which rows will be returned)
+     * @param array $params     The parameters array passed by the user.
      *
      * @return string|boolean
      */

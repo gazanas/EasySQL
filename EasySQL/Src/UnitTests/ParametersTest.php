@@ -51,7 +51,7 @@ final class ParametersTest extends TestCase
             "
         );
 
-    }//end setUp()
+    }
 
 
     public function tearDown()
@@ -64,7 +64,7 @@ final class ParametersTest extends TestCase
         
         ob_end_clean();
 
-    }//end tearDown()
+    }
 
     public function testPrepareParametersArrayPassedByTheUser()
     {
@@ -78,7 +78,7 @@ final class ParametersTest extends TestCase
         );
 
         $this->assertSame($prepared, $expected);
-    }//end testReturnTrueWhenActionIsInTheActionSet()
+    }
 
     public function testReturnNullIfWrongTypeOfParameterPassed() {
         $parameters = new Parameters($this->db);
@@ -95,5 +95,4 @@ final class ParametersTest extends TestCase
 
         $this->assertNull($prepared);
     }
-
-}//end class
+}
