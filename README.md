@@ -20,7 +20,8 @@ composer install
 Create a database.
 
 After that you should create the XML Schemata for the tables you want to create.
-There are two test xml schemata files as examples in the Schemata directory.
+There is a test xml schema file named test_users as an example in the Schemata directory.
+This schema is also used in the unit testing.
 
 Then go to the build folder, execute the build.php file as: php build.php
 complete all the needed information and you are ready to go.
