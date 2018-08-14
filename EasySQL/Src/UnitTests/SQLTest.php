@@ -4,12 +4,17 @@ namespace EasySQL\Src\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 
+<<<<<<< HEAD
+=======
+use EasySQL\Src\Collection\Collection as Collection;
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 use EasySQL\Src\Data as Data;
 
 final class SQLSTest extends TestCase
 {
 
     protected $db;
+<<<<<<< HEAD
     protected static $database;
 
     public static function setUpBeforeClass() {
@@ -26,6 +31,21 @@ final class SQLSTest extends TestCase
         $this->db = $database->getDB();
 
         $database = null;
+=======
+
+    protected $config;
+
+
+    public function setUp()
+    {
+        ob_start();
+
+        $database = new Connection();
+
+        $database->createDatabase();
+
+        $this->db = $database->getDB();
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
         $this->db->query(
             "CREATE TABLE `test_users` (
@@ -53,6 +73,7 @@ final class SQLSTest extends TestCase
     }
 
 
+<<<<<<< HEAD
     public function tearDown() {
         $this->db->query("DROP TABLE `test_users`");
         $this->db = null;
@@ -76,6 +97,29 @@ final class SQLSTest extends TestCase
         $data = $sql->executeQuery($query, $params);
 
         $expected = array(array('username' => 'root'));
+=======
+    public function tearDown()
+    {
+        $this->db = null;
+        
+        $database = new Connection();
+
+        $database->dropDatabase();
+        
+        ob_end_clean();
+    }
+
+    public function testExecuteQueryReturnsCorrectCollection() {
+        $sql = new Data\SQL($this->db);
+
+        $query = 'SELECT username FROM test_users WHERE id=?';
+
+        $params = array('id' => 1);
+
+        $data = $sql->executeQuery($query, $params);
+
+        $expected = new Collection(array('username' => 'root'));
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
         $this->assertEquals($data, $expected);
     }
@@ -85,11 +129,17 @@ final class SQLSTest extends TestCase
 
         $query = 'INVALID QUERY';
 
+<<<<<<< HEAD
         $params = array();
 
         $this->expectException(\PDOException::class);
 
         $data = $sql->executeQuery($query, $params);
+=======
+        $this->expectException(\PDOException::class);
+
+        $data = $sql->executeQuery($query);
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
     }
 
     public function testExecuteQueryThrowsPDOExceptionWhenParametersCountIsDifferentThanThoseInTheQuery() {
@@ -97,7 +147,11 @@ final class SQLSTest extends TestCase
 
         $query = 'SELECT * FROM test_users WHERE id = ? AND username = ?';
 
+<<<<<<< HEAD
         $params = array(1);
+=======
+        $params = array('id' => 1);
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
         
         $this->expectException(\PDOException::class);
 

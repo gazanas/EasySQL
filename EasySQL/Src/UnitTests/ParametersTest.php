@@ -4,13 +4,19 @@ namespace EasySQL\Src\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 
+<<<<<<< HEAD
 use EasySQL\Src\Parameters as Parameters;
+=======
+use EasySQL\Src\Data\SQL as SQL;
+use EasySQL\Src\Data\Parameters as Parameters;
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 use EasySQL\Src\Data as Data;
 
 final class ParametersTest extends TestCase
 {
 
     protected $db;
+<<<<<<< HEAD
     protected static $database;
 
     public static function setUpBeforeClass() {
@@ -27,6 +33,23 @@ final class ParametersTest extends TestCase
         $this->db = $database->getDB();
 
         $database = null;
+=======
+
+    protected $config;
+
+    protected $sql;
+
+
+    public function setUp()
+    {
+        ob_start(); 
+
+        $database = new Connection();
+
+        $database->createDatabase();
+
+        $this->db = $database->getDB();
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
         $this->db->query(
             "CREATE TABLE `test_users` (
@@ -54,6 +77,7 @@ final class ParametersTest extends TestCase
     }
 
 
+<<<<<<< HEAD
     public function tearDown() {
         $this->db->query("DROP TABLE `test_users`");
         $this->db = null;
@@ -72,6 +96,25 @@ final class ParametersTest extends TestCase
         $parameters = new Parameters\Parameters(new Data\Sets($this->db));
 
         $prepared = $parameters->prepareParameters('get', 'test_users', array('id' => 1, 'username' => 'root'));
+=======
+    public function tearDown()
+    {
+        $this->db = null;
+        
+        $database = new Connection();
+
+        $database->dropDatabase();
+        
+        ob_end_clean();
+
+    }
+
+    public function testPrepareParametersArrayPassedByTheUser()
+    {
+        $parameters = new Parameters($this->db);
+
+        $prepared = $parameters->prepareParameters('SELECT * FROM test_users', array('id' => 1, 'username' => 'root'));
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
         $expected = array(
             1,
@@ -81,6 +124,7 @@ final class ParametersTest extends TestCase
         $this->assertSame($prepared, $expected);
     }
 
+<<<<<<< HEAD
     public function testPrepareParametersThrowsExceptionWhenWrongTypeOfParameterPassed() {
         $parameters = new Parameters\Parameters(new Data\Sets($this->db));
 
@@ -155,5 +199,21 @@ final class ParametersTest extends TestCase
         $this->expectException(\Exception::class);
     
         $prepared = $parameters->prepareParameters('insert', 'test_users', $params);
+=======
+    public function testReturnNullIfWrongTypeOfParameterPassed() {
+        $parameters = new Parameters($this->db);
+
+        $prepared = $parameters->prepareParameters('SELECT * FROM test_users', 'root');
+
+        $this->assertNull($prepared);
+    }
+
+    public function testReturnNullIfEmptyParametersArrayPassed() {
+        $parameters = new Parameters($this->db);
+
+        $prepared = $parameters->prepareParameters('SELECT * FROM test_users', array());
+
+        $this->assertNull($prepared);
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
     }
 }

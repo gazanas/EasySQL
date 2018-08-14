@@ -4,13 +4,18 @@ namespace EasySQL\Src\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 
+<<<<<<< HEAD
 use EasySQL\Src\Query as Query;
+=======
+use EasySQL\Src\Data\SQL as SQL;
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 use EasySQL\Src\Data as Data;
 
 final class QueryTest extends TestCase
 {
 
     protected $db;
+<<<<<<< HEAD
     protected static $database;
 
     public static function setUpBeforeClass() {
@@ -27,6 +32,23 @@ final class QueryTest extends TestCase
         $this->db = $database->getDB();
 
         $database = null;
+=======
+
+    protected $config;
+
+    protected $sql;
+
+
+    public function setUp()
+    {
+        ob_start(); 
+
+        $database = new Connection();
+
+        $database->createDatabase();
+
+        $this->db = $database->getDB();
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
         $this->db->query(
             "CREATE TABLE `test_users` (
@@ -54,6 +76,7 @@ final class QueryTest extends TestCase
     }
 
 
+<<<<<<< HEAD
     public function tearDown() {
         $this->db->query("DROP TABLE `test_users`");
         $this->db = null;
@@ -149,10 +172,92 @@ final class QueryTest extends TestCase
                     'mail' => 'test_mail',
                     'password' => 'secret',
                     //is_active missing should get default value 0
+=======
+    public function tearDown()
+    {
+        $this->db = null;
+        
+        $database = new Connection();
+
+        $database->dropDatabase();
+        
+        ob_end_clean();
+
+    }
+
+    public function testSetUpWhereClauseOfTheQueryFromTheParametersArrayPassed()
+    {
+        $query = new Data\Query();
+
+        $where = $query->simpleWhereClause(array('id' => 1));
+
+        $expected = ' WHERE id = ?';
+
+        $this->assertSame($where, $expected);
+
+    }
+
+    public function testReturnNullWhenParametersArrayIsEmpty() {
+        $query = new Data\Query();
+
+        $where = $query->simpleWhereClause(array());
+
+        $this->assertNull($where);
+    }
+
+    public function testThrowExceptionWhenParametersPassedIsNotArray() {
+        $query = new Data\Query();
+
+        $this->expectException(\TypeError::class);
+
+        $where = $query->simpleWhereClause('test');
+    }
+
+    public function testSetUpQueryOptionsFromTheParametersArrayPassed()
+    {
+        $query = new Data\Query();
+        
+        $options = $query->queryOptions('SELECT * FROM test_users', array('id' => 1, 'options' => array('LIMIT' => 1)));
+
+        $expected = 'SELECT * FROM test_users LIMIT 1';
+
+        $this->assertSame($options, $expected);
+
+    }
+
+    public function testReturnNullIfTheOptionPassedIsNotInTheOptionsSet() {
+        $query = new Data\Query();
+
+        $this->expectException(Data\OptionsException::class);
+
+        $options = $query->queryOptions('SELECT * FROM test_users', array('id' => 1, 'options' => array('INVALID OPTION' => 1)));
+    }
+
+    public function testSetupInsertQueryFromTheParametersPassed() {
+        $query = new Data\InsertQuery();
+        
+        $allColumns = array(
+                        'id',
+                        'username',
+                        'mail',
+                        'password',
+                        'is_active',
+                        'role',
+                        'created_at',
+                        'updated_at'
+                    );
+
+        $notAutos = array(
+                    'username' => 'test_user',
+                    'mail' => 'test_mail',
+                    'password' => 'secret',
+                    'is_active' => 0,
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
                     'role' => 'user',
                     'created_at' => '2018-05-22'
                 );
 
+<<<<<<< HEAD
         $sets = new Data\Sets($this->db);
 
         $insertQuery = new Query\Query();
@@ -182,4 +287,28 @@ final class QueryTest extends TestCase
 
         $this->assertSame($insert, $expected);
     }
+=======
+        $autos = array (
+                    array(
+                        'name' => 'id',
+                        'type' => 'auto_increment'
+                    ),
+                    array(
+                        'name' => 'updated_at',
+                        'type' => 'current_timestamp'
+                    )
+                );
+
+        $nullable = array(
+                    'created_at' => 'created_at'
+                );
+
+        $insert = $query->setUpInsertQuery($allColumns, $notAutos, $autos, $nullable);
+
+        $expected = 'NULL,?,?,?,?,?,?,NOW())';
+
+        $this->assertSame($insert, $expected);
+    }
+
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 }

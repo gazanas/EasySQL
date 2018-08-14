@@ -32,8 +32,11 @@ class SQLBuilder extends XMLParser
         foreach ($sql_array as $table) {
             $i     = 0;
             $table = get_object_vars($table);
+<<<<<<< HEAD
             if(!is_array($table['field']))
                 $table['field'] = array($table['field']);
+=======
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
             $key   = $table['@attributes']['name'];
             $queries[$key]['field'] = '';
             foreach ($table['field'] as $field) {
@@ -109,6 +112,30 @@ class SQLBuilder extends XMLParser
                 echo 'Error creating table: '.$e->getMessage()."\n";
                 return false;
             }
+<<<<<<< HEAD
         }
     }
 }
+=======
+
+            $this->createObject($file, $query);
+        }
+    }
+
+
+    /**
+     * Create the object file for every sql table using the prototype (prototype.php)
+     **/
+    public function createObject($file, $query)
+    {
+        $className = basename(pathinfo($file, PATHINFO_FILENAME));
+
+        $data = file_get_contents(__DIR__.'/prototype.cnf');
+
+        $data = preg_replace('/\<the\-class\-name\>/', $className, $data);
+
+        file_put_contents(dirname(__DIR__).'/EasySQL/Src/API/DAOs/'.$className.'.php', $data);
+        chmod(dirname(__DIR__).'/EasySQL/Src/API/DAOs/'.$className.'.php', 0777);
+    }
+}
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a

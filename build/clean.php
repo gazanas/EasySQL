@@ -31,3 +31,16 @@ $db->query('SET foreign_key_checks = 1');
 
 $result = null;
 $db     = null;
+<<<<<<< HEAD
+=======
+
+$it = new RecursiveDirectoryIterator(dirname(__DIR__).'/EasySQL/Src/API/DAOs/', FilesystemIterator::SKIP_DOTS);
+$it = new RecursiveIteratorIterator($it, RecursiveIteratorIterator::CHILD_FIRST);
+foreach ($it as $file) {
+    if ($file->isDir() === true) {
+        rmdir($file->getPathname());
+    } else {
+        unlink($file->getPathname());
+    }
+}
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a

@@ -48,6 +48,7 @@
 
 		<div class='row col-md-2 insert-value'>
 			{{# insert_values }}
+<<<<<<< HEAD
 				<div style='width: 300px;' class='insert-section' id='{{entity}}'>
 					<table style='width: 300px;'>
 							<tr>
@@ -61,6 +62,19 @@
 							{{/auto_values}}
 							</tr>
 					</table>
+=======
+				<div class='insert-section' id='{{entity}}'>
+					<div class='left-insert' style='float: left; width: 70%;'>
+					{{#values}}
+						<input type='text' id='{{.}}' class='form-control insert-input' placeholder='{{.}}'>
+					{{/values}}
+					</div>
+					<div style='float: right; width: 30%;'>
+					{{#auto}}
+						<div style='height: 18px; display: block;' class='auto-complete-values'>{{.}}</div>
+					{{/auto}}
+					</div>
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 				</div>
 			{{/ insert_values }}
 		</div>
@@ -76,6 +90,7 @@
 	<script>
 		$(document).ready(function(e) {
 			$('input').attr('autocomplete', 'off');
+<<<<<<< HEAD
 
 			$('.insert-section table').each(function() {
 			        var $this = $(this);
@@ -97,6 +112,8 @@
 			            $this.append(this);
 			        });
 			    });
+=======
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 		});
 
 	</script>
@@ -295,9 +312,15 @@
 
 			} else if(action == 'INSERT') {
 				var entity = $('#entities option:selected').val();
+<<<<<<< HEAD
 
 				$('.insert-section#'+entity).show();
 				$('.insert-section#'+entity+' .insert-input').each(function(index){
+=======
+				$('.insert-section#'+entity).show();
+
+				$('.insert-section#'+entity).children('.left-insert').children('.insert-input').each(function(index){
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 					$('.where-clause').append('<span class=\'insert\' id=\''+$(this).attr('id')+'\'></span>');
 				});
 

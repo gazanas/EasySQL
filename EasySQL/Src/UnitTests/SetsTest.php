@@ -4,12 +4,17 @@ namespace EasySQL\Src\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 
+<<<<<<< HEAD
+=======
+use EasySQL\Src\Data\Sets as Sets;
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 use EasySQL\Src\Data as Data;
 
 final class SetsTest extends TestCase
 {
 
     protected $db;
+<<<<<<< HEAD
     protected static $database;
 
     public static function setUpBeforeClass() {
@@ -26,6 +31,21 @@ final class SetsTest extends TestCase
         $this->db = $database->getDB();
 
         $database = null;
+=======
+
+    protected $config;
+
+
+    public function setUp()
+    {
+        ob_start();
+
+        $database = new Connection();
+
+        $database->createDatabase();
+
+        $this->db = $database->getDB();
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
         $this->db->query(
             "CREATE TABLE `test_users` (
@@ -53,6 +73,7 @@ final class SetsTest extends TestCase
     }
 
 
+<<<<<<< HEAD
     public function tearDown() {
         $this->db->query("DROP TABLE `test_users`");
         $this->db = null;
@@ -228,3 +249,50 @@ final class SetsTest extends TestCase
     	$this->assertSame($autos, $expected);
     }
 }
+=======
+    public function tearDown()
+    {
+        $this->db = null;
+        
+        $database = new Connection();
+
+        $database->dropDatabase();
+        
+        ob_end_clean();
+    }
+
+    public function testReturnTrueWhenTableNameIsInTheDataSet()
+    {
+        $sets = new Sets(array('test_users'));
+        $this->assertTrue($sets->checkDataSet('test_users'));
+
+    }
+
+    public function testThrowExceptionWhenTableNameIsNotInTheDataSet()
+    {
+        $this->expectException(Data\SetException::class);
+        $sets = new Sets(array('test_users'));
+        $sets->checkDataSet('<invalid data set>');
+
+    }
+
+    public function testReturnTrueWhenActionIsInTheActionSet()
+    {
+        $sets = new Sets();
+        $this->assertTrue(
+            $sets->checkActionSet('get')
+        );
+
+    }
+
+
+    public function testThrowExceptionWhenActionIsInTheActionSet()
+    {
+        $sets = new Sets();
+        $this->expectException(Data\ActionException::class);
+        $sets->checkActionSet('invalid_action');
+
+    }
+
+}
+>>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a

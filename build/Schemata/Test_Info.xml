@@ -1,0 +1,40 @@
+<?xml version='1.0' standalone='yes'?>
+	<schema>
+		<table name='test_info'>
+			<field>
+				<name>id</name>
+				<type>int unsigned</type>
+				<primary>TRUE</primary>
+				<increment>TRUE</increment>
+				<null>FALSE</null>
+			</field>
+			<field>
+				<name>name</name>
+				<type>varchar(15)</type>
+				<null>FALSE</null>
+				<foreign>
+					<reference>
+						<parent>test_users</parent>
+						<table>username</table>
+					</reference>
+				</foreign>
+			</field>
+			<field>
+				<name>phone</name>
+				<type>bigint unsigned</type>
+				<unique>TRUE</unique>
+				<null>FALSE</null>
+			</field>
+			<field>
+				<name>created_at</name>
+				<type>timestamp</type>
+				<default>NULL</default>
+				<null>TRUE</null>
+			</field>
+			<field>
+				<name>updated_at</name>
+				<type>timestamp</type>
+				<default>CURRENT_TIMESTAMP</default>
+			</field>
+		</table>
+	</schema>
