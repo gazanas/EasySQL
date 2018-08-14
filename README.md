@@ -1,27 +1,16 @@
 # Read Me
 
 EasySQL is a PHP API that allows users to perform simple SQL queries
-<<<<<<< HEAD
 in a one liner code. EasySQL uses prepared statements to avoid SQL injections.
-=======
-in a one liner code.
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
 EasySQL provides a UI with multiple dropdowns. Selecting values from
 these dropdowns provides the EasySQL function call for the parameters
 passed by the user. This makes the execution of the SQL queries really easy.
-<<<<<<< HEAD
 At this moment UI does not provide multiple values selection even though the api does.
 
 # Installation
 
 Prerequisites: SQL DBMS (mysql, sqlite etc), php, PDO module.
-=======
-
-# Installation
-
-Prerequisites: SQL DBMS (mysql, sqlite etc), apache2, php, PDO module.
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
 To install EasySQL you need to install the modules needed from the directory
 where composer.json is, by executing:
@@ -36,12 +25,9 @@ There are two test xml schemata files as examples in the Schemata directory.
 Then go to the build folder, execute the build.php file as: php build.php
 complete all the needed information and you are ready to go.
 
-<<<<<<< HEAD
 The .env direcotry should be outside of the document root since it contains the
 database credentials.
 
-=======
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 # Clean
 
 If you want to clean everything and rebuild the you should run php clean.php from
@@ -122,15 +108,12 @@ easy_sql('test_users', 'GET', array('id' => 1, array('id' => 2), 'condition' => 
 easy_sql('test_users', 'VALUE', array('return' => 'username'));
 ```
 
-<<<<<<< HEAD
 or if you want to return multiple values:
 
 ```
 easy_sql('test_users', 'VALUE', array('return' => array('username', 'password')));
 ```
 
-=======
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 - The API call to update a certain row is:
 
 ```

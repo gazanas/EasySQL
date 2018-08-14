@@ -2,19 +2,11 @@
 
 	require_once('init.php');
 
-<<<<<<< HEAD
 	$db = new EasySQL\Src\API\Connection();
 
 	$sets = new EasySQL\Src\Data\Sets($db->getDB());
 
 	$tables = $sets->getTables();
-=======
-	$api = new EasySQL\Src\API\API();
-
-	$sets = new EasySQL\Src\Data\Sets();
-
-	$tables = $api->dbinfo->getTables();
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 	rsort($tables);
 
 	$fields = array();
@@ -25,7 +17,6 @@
 	* Set the values of the array to a new array so indexing will be from 0-n (n the length of the array)
 	*/
 
-<<<<<<< HEAD
 	$actions = array_values(array_unique(array_map('strtoupper', $sets->getActionSet())));
 
 	$options = array_values(array_unique(array_map('strtoupper', $sets->getOptionSet())));
@@ -59,37 +50,5 @@
 		}
 	}
 
-=======
-	$actions = array_values(array_unique(array_map('strtoupper', $sets->actionSet)));
-
-	$options = array_values(array_unique(array_map('strtoupper', $sets->options)));
-
-	$operators = array_values(array_unique(array_map('strtoupper', $sets->operators)));
-
-	$columns = array();
-
-	foreach($tables as $table) {
-		$fields[] = array('entity' => $table, 'values' => $api->dbinfo->getColumns($table));
-		
-		$auto_table[$table] = $api->dbinfo->getAutoCompleted($table);
-
-	}
-	$insert_values = $fields;
-
-	foreach($fields as $key => $field) {
-		foreach($field['values'] as $index => $value) {
-			foreach($auto_table[$field['entity']] as $auto) {
-				if($value == $auto['name']) {
-					$insert_values[$key]['auto'][] = $auto['type'];
-				} else {
-					$insert_values[$key]['auto'][] = '';
-				}
-			}
-		}
-		$insert_values[$key]['values'] = array_values($insert_values[$key]['values']);
-	}
-
-
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 	print($template->render('{{> head }} '.file_get_contents(__DIR__.'/api.mustache'), array('entities' => $tables, 'actions' => $actions, 'options' => $options, 'operators' => $operators, 'fields' => $fields, 'insert_values' => $insert_values)));
 ?>

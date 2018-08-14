@@ -1,8 +1,0 @@
-<?php
-
-namespace EasySQL\Src\API\DAOs;
-
-use EasySQL\Src\API as API;
-
-class <the-class-name> extends API\DAO implements API\DAOInterface
-{}//end class

@@ -2,22 +2,14 @@
 
 namespace EasySQL\Src\UnitTests;
 
-<<<<<<< HEAD
 use \PHPUnit\Framework\TestCase;
 
-=======
-use PHPUnit\Framework\TestCase;
-
-use EasySQL\Src\Collection as Collection;
-use EasySQL\Src\Data as Data;
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 use EasySQL\Src\API as API;
 
 final class APITest extends TestCase
 {
 
     protected $db;
-<<<<<<< HEAD
     protected static $database;
 
     public static function setUpBeforeClass() {
@@ -34,21 +26,6 @@ final class APITest extends TestCase
         $this->db = $database->getDB();
 
         $database = null;
-=======
-
-    protected $config;
-
-
-    public function setUp()
-    {
-        ob_start(); 
-
-        $database = new Connection();
-
-        $database->createDatabase();
-
-        $this->db = $database->getDB();
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
         $this->db->query(
             "CREATE TABLE `test_users` (
@@ -76,7 +53,6 @@ final class APITest extends TestCase
     }
 
 
-<<<<<<< HEAD
     public function tearDown() {
         $this->db->query("DROP TABLE `test_users`");
         $this->db = null;
@@ -146,27 +122,6 @@ final class APITest extends TestCase
 
         $expected = array(
             array(
-=======
-    public function tearDown()
-    {
-        $this->db = null;
- 
-        $database = new Connection();
-
-        $database->dropDatabase();
-
-        ob_end_clean();
-
-    }
-
-    public function testValidAPICallReturnsTheCorrectData() {
-
-        $api = new API\API($this->db);
-        $data = $api->_easy_sql('test_users', 'get', array('id' => 1));
-
-        $expected = new Collection\Collection(
-            [
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
                 'id' => 1,
                 'username' => 'root',
                 'mail' => 'root@mysite.com',
@@ -175,7 +130,6 @@ final class APITest extends TestCase
                 'role' => 'admin',
                 'created_at' => '2018-05-21 21:00:00',
                 'updated_at' => '2018-05-22 15:55:42'
-<<<<<<< HEAD
             )
         );
 
@@ -219,14 +173,10 @@ final class APITest extends TestCase
                 'username' => 'root'
             )
         );
-=======
-            ]);
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 
         $this->assertEquals($data, $expected);
     }
 
-<<<<<<< HEAD
     public function testAPIValueCallReturnMultipleFieldsSuccess() {
         $api = new API\API($this->db);
 
@@ -360,43 +310,4 @@ final class APITest extends TestCase
 
         $this->assertEquals($data, $expected);
     }
-=======
-    public function testReturnFalseWhenWrongDataSetIsPassed() {
-
-        $api = new API\API($this->db);
-        
-        $data = $api->_easy_sql('<invalid data set>', 'get', array('id' => 1));
-
-        $this->assertFalse($data);
-    }
-
-    public function testReturnFalseWhenWrongActionIsPassed() {
-
-        $api = new API\API($this->db);
-        
-        $data = $api->_easy_sql('test_users', '<invalid action>', array('id' => 1));
-
-        $this->assertFalse($data);
-    }
-
-    public function testThrowsExceptionWhenParametersPassedIsNotAnArray() {
-
-        $api = new API\API($this->db);
-
-        $this->expectException(\TypeError::class);
-        
-        $data = $api->_easy_sql('test_users', 'get', '<invalide parameter type>');
-
-    }
-
-    public function testReturnNullWhenParametersPassedAreInvalid() {
-
-        $api = new API\API($this->db);
-
-        $data = $api->_easy_sql('test_users', 'get', array('pet' => 'dog'));
-
-        $this->assertFalse($data);
-    }
-
->>>>>>> d53079c0c8245adc1be698e2fde40a2e8108283a
 }
