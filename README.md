@@ -21,7 +21,7 @@ Create a database.
 
 After that you should create the XML Schemata for the tables you want to create.
 There is a test xml schema file named test_users as an example in the Schemata directory.
-This schema is also used in the unit testing.
+If you don't want the table test_users to be created delete this file.
 
 Then go to the build folder, execute the build.php file as: php build.php
 complete all the needed information and you are ready to go.
