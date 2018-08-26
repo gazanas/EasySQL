@@ -25,7 +25,7 @@ class QueryOptions {
         if (isset($params['options']) === true && is_array($params['options']) === true) {
             if ($this->checkOptions($params['options']) === true) {
                 foreach ($params['options'] as $option => $value) {
-                    $option = preg_replace('/order/', 'order by', $option);
+                    $option = preg_replace('/(order|ORDER)/', 'order by', $option);
                     $query .= ' '.$option.' '.$value;
                 }
             } else {
