@@ -101,14 +101,14 @@ easy_sql('test_users', 'GET', array('options' => array('limit' => 1, 'order' => 
 easy_sql('test_users', 'GET', array('id' => 1));
 ```
 
-- The API provides support for operators such as (>, <, <>, <=, >=)
+- The API provides support for operators such as (>, <, <>, <=, >=).
 The API call to get all the columns that have id greater than 1 is:
 
 ```
 easy_sql('test_users', 'GET', array(array('operator' => '>', 'id' => 1)));
 ```
 
--he API provides support for conditions (AND, OR)
+- The API provides support for conditions (AND, OR).
 The API call to get the columns that have id 1 or 2 is:
 
 ```
