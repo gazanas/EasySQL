@@ -5,7 +5,8 @@ in a one liner code. EasySQL uses prepared statements to avoid SQL injections.
 
 EasySQL provides a UI with multiple dropdowns. Selecting values from
 these dropdowns provides the EasySQL function call for the parameters
-passed by the user. This makes the execution of the SQL queries really easy.
+passed by the user. The UI is under the EasySQL/UI directory.
+This makes the execution of the SQL queries really easy.
 At this moment UI does not provide multiple values selection even though the api does.
 
 # Installation
