@@ -85,19 +85,31 @@ Now we want to perform some action using the EasySQL API.
 easy_sql('test_users', 'GET', array());
 ```
 
+- You can limit or order the results of an API call by using:
+
+```
+easy_sql('test_users', 'GET', array('options' => array('limit' => 1)));
+
+easy_sql('test_users', 'GET', array('options' => array('order' => 'username DESC')));
+
+easy_sql('test_users', 'GET', array('options' => array('limit' => 1, 'order' => 'username DESC')));
+```
+
 - The API call to get all the values from the row with id equal to 1 is:
 
 ```
 easy_sql('test_users', 'GET', array('id' => 1));
 ```
 
-- The API call to get all the columns that have id greater than 1 is:
+- The API provides support for operators such as (>, <, <>, <=, >=)
+The API call to get all the columns that have id greater than 1 is:
 
 ```
 easy_sql('test_users', 'GET', array(array('operator' => '>', 'id' => 1)));
 ```
 
-- The API call to get the columns that have id 1 or 2 is:
+-he API provides support for conditions (AND, OR)
+The API call to get the columns that have id 1 or 2 is:
 
 ```
 easy_sql('test_users', 'GET', array('id' => 1, array('id' => 2), 'condition' => array('OR')));
