@@ -102,7 +102,7 @@ easy_sql('test_users', 'GET', array('options' => array('limit' => 1, 'order' => 
 easy_sql('test_users', 'GET', array('id' => 1));
 ```
 
-- The API provides support for operators such as (>, <, <>, <=, >=).
+- The API provides support for operators such as (>, <, <>, <=, >=, LIKE).
 The API call to get all the columns that have id greater than 1 is:
 
 ```
