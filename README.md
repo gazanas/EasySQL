@@ -107,6 +107,7 @@ The API call to get all the columns that have id greater than 1 is:
 
 ```
 easy_sql('test_users', 'GET', array(array('operator' => '>', 'id' => 1)));
+easy_sql('test_users', 'GET', array(array('operator' => 'LIKE', 'username' => '%da%')));
 ```
 
 - The API provides support for conditions (AND, OR).
