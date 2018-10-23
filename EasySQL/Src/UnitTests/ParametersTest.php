@@ -5,7 +5,7 @@ namespace EasySQL\Src\UnitTests;
 use PHPUnit\Framework\TestCase;
 
 use EasySQL\Src\Parameters as Parameters;
-use EasySQL\Src\Data as Data;
+use EasySQL\Src\Sets as Sets;
 
 final class ParametersTest extends TestCase
 {
@@ -13,9 +13,11 @@ final class ParametersTest extends TestCase
     protected $db;
     protected static $database;
 
+    protected $sets;
+    protected $sql;
+
     public static function setUpBeforeClass() {
         self::$database = new Connection();
-
         self::$database->createDatabase();
 
     }    
@@ -51,6 +53,8 @@ final class ParametersTest extends TestCase
             "
         );
 
+        $this->sets = new Sets\Sets($this->db);
+
     }
 
 
@@ -67,11 +71,11 @@ final class ParametersTest extends TestCase
 
     }
 
-    public function testPrepareParametersByValidParametersArrayPassedByTheUser()
+    public function testPrepareGetParametersByValidParametersArrayPassedByTheUser()
     {
-        $parameters = new Parameters\Parameters(new Data\Sets($this->db));
+        $parameters = new Parameters\GetParameters($this->sets);
 
-        $prepared = $parameters->prepareParameters('get', 'test_users', array('id' => 1, 'username' => 'root'));
+        $prepared = $parameters->prepareParameters('test_users', array('id' => 1, 'username' => 'root'));
 
         $expected = array(
             1,
@@ -81,44 +85,46 @@ final class ParametersTest extends TestCase
         $this->assertSame($prepared, $expected);
     }
 
-    public function testPrepareParametersThrowsExceptionWhenWrongTypeOfParameterPassed() {
-        $parameters = new Parameters\Parameters(new Data\Sets($this->db));
+    public function testPrepareGetParametersThrowsExceptionWhenWrongTypeOfParameterPassed() {
+        $parameters = new Parameters\GetParameters($this->sets);
 
         $this->expectException(\Exception::class);
 
-        $prepared = $parameters->prepareParameters('get', 'test_users', 'root');
+        $prepared = $parameters->prepareParameters('test_users', 'root');
 
     }
 
-    public function testPrepareParametersReturnEmptyArrayIfEmptyParametersArrayPassed() {
-        $parameters = new Parameters\Parameters(new Data\Sets($this->db));
+    public function testPrepareGetParametersReturnEmptyArrayIfEmptyParametersArrayPassed() {
+        $parameters = new Parameters\GetParameters($this->sets);
 
-        $prepared = $parameters->prepareParameters('get', 'test_users', array());
+        $prepared = $parameters->prepareParameters('test_users', array());
 
         $expected = array();
 
         $this->assertSame($prepared, $expected);
     }
 
-    public function testPrepareParametersForValueActionThrowsExceptionWhenActionParameterIsMissing() {
-        $parameters = new Parameters\Parameters(new Data\Sets($this->db));
+    public function testPrepareGetParametersWithReturnParameter() {
+        $parameters = new Parameters\GetParameters($this->sets);
 
-        $this->expectException(\Exception::class);
+        $prepared = $parameters->prepareParameters('test_users', array('return' => 'username', 'id' => 1));
 
-        $prepared = $parameters->prepareParameters('value', 'test_users', array('id' => 1));
+        $expected = array(1);
+
+        $this->assertSame($prepared, $expected);        
 
     }
 
     public function testPrepareParametersForUpdateActionThrowsExceptionWhenActionParameterIsMissing() {
-        $parameters = new Parameters\Parameters(new Data\Sets($this->db));
+        $parameters = new Parameters\UpdateParameters($this->sets);
 
         $this->expectException(\Exception::class);
 
-        $prepared = $parameters->prepareParameters('update', 'test_users', array('to_update' => 'username', 'id' => 1));
+        $prepared = $parameters->prepareParameters('test_users', array('to_update' => 'username', 'id' => 1));
     }
 
     public function testPreapreParametersForInsertAction() {
-        $parameters = new Parameters\Parameters(new Data\Sets($this->db));
+        $parameters = new Parameters\InsertParameters($this->sets);
 
         $params = array(
             'username' => 'test_user',
@@ -128,7 +134,7 @@ final class ParametersTest extends TestCase
             'is_active' => 1
         );
 
-        $preparedParameters = $parameters->prepareParameters('insert', 'test_users', $params);
+        $preparedParameters = $parameters->prepareParameters('test_users', $params);
 
         $expected = array(
             'test_user',
@@ -142,7 +148,7 @@ final class ParametersTest extends TestCase
     }
 
     public function testPrepareParametersForInsertActionThrowsExceptionWhenRequiredColumnIsMissing() {
-        $parameters = new Parameters\Parameters(new Data\Sets($this->db));
+        $parameters = new Parameters\InsertParameters($this->sets);
 
         $params = array(
             //username missing
@@ -154,6 +160,6 @@ final class ParametersTest extends TestCase
 
         $this->expectException(\Exception::class);
     
-        $prepared = $parameters->prepareParameters('insert', 'test_users', $params);
+        $prepared = $parameters->prepareParameters('test_users', $params);
     }
 }

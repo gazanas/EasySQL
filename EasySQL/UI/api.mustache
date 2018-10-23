@@ -22,6 +22,7 @@
 					{{# fields }}
 					<select class='form-control return-selector' id='{{entity}}'>
 						<option selected disabled>Return</option>
+						<option class='all' value=''>*</value>
 						{{#values}}
 						<option value='{{.}}'>{{.}}</option>
 						{{/values}}
@@ -227,7 +228,7 @@
 					$('.where-clause').children('span:first-child').html(', '+$('.where-clause').children('span:first-child').text());		
 				$('.to-update').html('\'to_update\' => \''+field+'\'');		
 
-			} else if(action == 'VALUE') {
+			} else if(action == 'GET') {
 				
 				if($('.option-area').length) {
 					var place = $('.option-area').last();
@@ -257,11 +258,10 @@
 				$('.limit-selector').after('<input type=\'text\' class=\'form-control col-md-2 limit\'>\
 					<button class=\'btn btn-primary btn-sm remove-limit\'>x</button>');
 
-				var field = $('select.return-selector#'+entity).children('option:selected').val();
 				$('select.return-selector#'+entity).show();
 				if($('.where-clause').children('span:first-child').text().indexOf(',') < 0)
 					$('.where-clause').children('span:first-child').html(', '+$('.where-clause').children('span:first-child').html());	
-				$('.to-return').html('\'return\' => \''+field+'\'');		
+				$('.to-return').html('');		
 
 			} else if(action == 'GET') {
 

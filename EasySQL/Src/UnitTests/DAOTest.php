@@ -4,7 +4,10 @@ namespace EasySQL\Src\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 
+use EasySQL\Src\Sets as Sets;
 use EasySQL\Src\Data as Data;
+use EasySQL\Src\Parameters as Parameters;
+use EasySQL\Src\Query as Query;
 
 class DAOTest extends TestCase
 {
@@ -12,9 +15,11 @@ class DAOTest extends TestCase
     protected $db;
     protected static $database;
 
+    protected $sets;
+    protected $sql;
+
     public static function setUpBeforeClass() {
         self::$database = new Connection();
-
         self::$database->createDatabase();
 
     }    
@@ -50,6 +55,9 @@ class DAOTest extends TestCase
             "
         );
 
+        $this->sets = new Sets\Sets($this->db);
+        $this->sql = new Data\SQL($this->db);
+
     }
 
 
@@ -57,7 +65,6 @@ class DAOTest extends TestCase
         $this->db->query("DROP TABLE `test_users`");
         $this->db = null;
     }
-
     public static function tearDownAfterClass() {
 
         self::$database->dropDatabase();
@@ -68,7 +75,7 @@ class DAOTest extends TestCase
 
     public function testDAOGetCallReturnsAnArrayOfAllTableRows()
     {
-        $dao  = new Data\DAO(new Data\Sets($this->db), 'test_users', 'get', array(), $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\GetParameters($this->sets), new Query\GetQuery($this->sets), 'test_users', array());
         $data = $dao->get();
 
         $expected = array(
@@ -100,7 +107,7 @@ class DAOTest extends TestCase
 
     public function testDAOGetCallReturnsAnArrayOfCertainTableRows()
     {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'get', array('id' => 1), $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\GetParameters($this->sets), new Query\GetQuery($this->sets), 'test_users', array('id' => 1));
 
         $data = $dao->get();
 
@@ -121,7 +128,7 @@ class DAOTest extends TestCase
     }
 
     public function testDAOGetCallReturnEmptyArrayWhenRowDoesNotExist() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'get', array('id' => 999), $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\GetParameters($this->sets), new Query\GetQuery($this->sets), 'test_users',  array('id' => 999));
 
         $data = $dao->get();
 
@@ -131,22 +138,14 @@ class DAOTest extends TestCase
     }
 
     public function testDAOGetCallThrowsExceptionWhenInvalidParametersPassed() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'get', array('<invalid parameter>' => 1), $this->db);
-
-        $this->expectException(\PDOException::class);
-
-        $data = $dao->get();
-    }
-
-    public function testDAOGetCallThrowsExceptionWhenInvalidParameterTypePassed() {
         $this->expectException(\Exception::class);
 
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'get', '<invalid parameter>', $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\GetParameters($this->sets), new Query\GetQuery($this->sets), 'test_users', array('<invalid parameter>' => 1));
     }
 
-    public function testDAOValueCallReturnsAnArrayOfOneTableColumn() {
-        $dao      = new Data\DAO(new Data\Sets($this->db), 'test_users', 'value', array('return' => 'username', 'id' => 1), $this->db);
-        $data     = $dao->value();
+    public function testDAOGetCallReturnsAnArrayOfOneTableColumn() {
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\GetParameters($this->sets), new Query\GetQuery($this->sets), 'test_users', array('return' => 'username', 'id' => 1));
+        $data     = $dao->get();
 
         $expected = array(
                             array(
@@ -157,26 +156,18 @@ class DAOTest extends TestCase
 
     }
 
-    public function testDAOValueCallReturnsEmptyArrayWhenRowDoesNotExist() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'value', array('return' => 'username', 'id' => 999), $this->db);
+    public function testDAOVGetCallReturnsEmptyArrayWhenRowDoesNotExist() {
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\GetParameters($this->sets), new Query\GetQuery($this->sets), 'test_users', array('return' => 'username', 'id' => 999));
 
-        $data = $dao->value();
+        $data = $dao->get();
 
         $expected = array();
 
         $this->assertEquals($data, $expected);
     }
 
-    public function testDAOValueCallThrowsExceptionWhenValueActionParameterIsMissing() {
-        $this->expectException(\Exception::class);
-
-        $dao  = new Data\DAO(new Data\Sets($this->db), 'test_users', 'value', array('id' => 1), $this->db);
-
-    }
-
-
     public function testDAOUpdateCallUpdatesOneTableRow() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'update', ['to_update' => 'username', 'updated' => 'updated_root', 'id' => 1], $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\UpdateParameters($this->sets), new Query\UpdateQuery($this->sets), 'test_users', array('to_update' => 'username', 'updated' => 'updated_root', 'id' => 1));
         
         $data = $dao->update();
 
@@ -187,7 +178,7 @@ class DAOTest extends TestCase
     }
 
     public function testDAOUpdateCallUpdatesAllTableRows() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'update', ['to_update' => 'is_active', 'updated' => 1], $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\UpdateParameters($this->sets), new Query\UpdateQuery($this->sets), 'test_users', array('to_update' => 'is_active', 'updated' => 1));
 
         $data = $dao->update();
 
@@ -197,7 +188,7 @@ class DAOTest extends TestCase
     }
 
     public function testDAOUpdateCallThrowsExceptionWhenUpdatedValueOnAUniqueColumn() {        
-        $dao  = new Data\DAO(new Data\Sets($this->db), 'test_users', 'update', ['to_update' => 'username', 'updated' => 'root'], $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\UpdateParameters($this->sets), new Query\UpdateQuery($this->sets), 'test_users', array('to_update' => 'username', 'updated' => 'root'));
         
         $this->expectException(\Exception::class);
 
@@ -208,14 +199,14 @@ class DAOTest extends TestCase
 
     public function testDAOUpdateCallThrowsExceptionWhenUpdateActionParametersAreMissing() {        
         $this->expectException(\Exception::class);
-
-        $dao  = new Data\DAO(new Data\Sets($this->db), 'test_users', 'update', ['to_update' => 'username'], $this->db);
+        
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\UpdateParameters($this->sets), new Query\UpdateQuery($this->sets), 'test_users', array('to_update' => 'username'));
 
     }
 
 
     public function testDAODeleteCallDeletesOneTableRow() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'delete', ['id' => 1], $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\DeleteParameters($this->sets), new Query\DeleteQuery($this->sets), 'test_users', array('id' => 1));
 
         $data = $dao->delete();
         
@@ -227,7 +218,7 @@ class DAOTest extends TestCase
 
 
     public function testDeleteDAOCallDeletesAllTableRows() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'delete', array(), $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\DeleteParameters($this->sets), new Query\DeleteQuery($this->sets), 'test_users', array());
 
         $data = $dao->delete();
 
@@ -238,7 +229,7 @@ class DAOTest extends TestCase
     }
 
     public function testDAODeleteCallThrowsExceptionWhenRowDoesNotExist() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'delete', array('id' => 999), $this->db);
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\DeleteParameters($this->sets), new Query\DeleteQuery($this->sets), 'test_users', array('id' => 999));
 
         $this->expectException(\Exception::class);
 
@@ -247,14 +238,12 @@ class DAOTest extends TestCase
 
 
     public function testDAOInsertCallInsertsANewRow() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'insert',[
-                'username' => 'test_user',
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\InsertParameters($this->sets), new Query\InsertQuery($this->sets), 'test_users', array('username' => 'test_user',
                 'mail' => 'test_user@example.com',
                 'password' => 'secret',
                 'is_active' => 0,
                 'role' => 'user',
-                'created_at' => '2018-05-24'
-            ],  $this->db);
+                'created_at' => '2018-05-24'));
 
         $data = $dao->insert();
 
@@ -268,26 +257,26 @@ class DAOTest extends TestCase
     public function testDAOInsertCallThrowsExceptionWhenRequiredColumnParameterIsMissing() {
         $this->expectException(\Exception::class);
 
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'insert', array(
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\InsertParameters($this->sets), new Query\InsertQuery($this->sets), 'test_users', array(
                 //missing username
                 'mail' => 'test_user@example.com',
                 'password' => 'secret',
                 'is_active' => 0,
                 'role' => 'user',
                 'created_at' => '2018-05-24'
-            ), $this->db);
+            ));
 
     }
 
     public function testDAOInsertCallThrowsExceptionWhenInsertingDuplicateValueOnAUniqueColumn() {
-        $dao = new Data\DAO(new Data\Sets($this->db), 'test_users', 'insert', [
+        $dao = new Data\DAO($this->sql, $this->sets, new Parameters\InsertParameters($this->sets), new Query\InsertQuery($this->sets), 'test_users', array(
                 'username' => 'root',
                 'mail' => 'test_user@example.com',
                 'password' => 'secret',
                 'is_active' => 0,
                 'role' => 'user',
                 'created_at' => '2018-05-24'
-            ], $this->db);
+            ));
 
         $this->expectException(\Exception::class);
 

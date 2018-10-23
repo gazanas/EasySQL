@@ -4,7 +4,7 @@
 
 	$db = new EasySQL\Src\API\Connection();
 
-	$sets = new EasySQL\Src\Data\Sets($db->getDB());
+	$sets = new EasySQL\Src\Sets\Sets($db->getDB());
 
 	$tables = $sets->getTables();
 	rsort($tables);

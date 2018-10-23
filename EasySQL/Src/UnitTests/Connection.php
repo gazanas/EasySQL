@@ -23,9 +23,13 @@ class Connection
 
     public function createDatabase() {
         try {
-            $config = $this->getDatabaseConfig(); 
+            $config = $this->getDatabaseConfig();
             // Connect to database or throw error message.
+            if(!isset($config[5]))
+                $config[5] = null;
+
             $this->db = new \PDO($config[1].':host='.$config[2], $config[3], $config[5]);
+            
             $this->db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
@@ -40,6 +44,8 @@ class Connection
         try {
             $config = $this->getDatabaseConfig(); 
             // Connect to database or throw error message.
+            if(!isset($config[5]))
+                $config[5] = null;
             $this->db = new \PDO($config[1].':host='.$config[2], $config[3], $config[5]);
             $this->db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -80,6 +86,9 @@ class Connection
     public function getDB()
     {
         $config = $this->getDatabaseConfig(); 
+
+        if(!isset($config[5]))
+            $config[5] = null;
 
         $this->db = new \PDO(
             $config[1].':host='.$config[2].';dbname=test',

@@ -24,7 +24,7 @@ $('#entities').on('change', function(e) {
 	$('.order').hide();
 	$('.option-area').remove();
 
-	if(action == 'VALUE') {
+	if(action == 'GET') {
 
 		if($('.option-area').length) {
 			var place = $('.option-area').last();
@@ -46,10 +46,9 @@ $('#entities').on('change', function(e) {
 		var field = $('select.return-selector#'+entity).children('option:selected').val();
 		$('select.return-selector#'+entity).show();
 		if($('.where-clause').children('span:first-child').text().indexOf(',') < 0)
-			$('.where-clause').children('span:first-child').html(', '+$('.where-clause').children('span:first-child').text());		
+			$('.where-clause').children('span:first-child').html(', '+$('.where-clause').children('span:first-child').text());	
+				
 		$('.to-return').html('\'return\' => \''+field+'\'');
-	
-	} else if(action == 'GET') {
 
 		if($('.option-area').length) {
 			var place = $('.option-area').last();

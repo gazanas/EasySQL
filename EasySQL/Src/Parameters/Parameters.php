@@ -2,23 +2,11 @@
 
 namespace EasySQL\Src\Parameters;
 
-class Parameters {
-	
-    protected $sets;
-
-    /**
-    * Intializes the parameters object.
-    *
-    * @param string $set        The table name.
-    */
-    public function __construct($sets) {
-        $this->sets = $sets;
-    }
+abstract class Parameters {
 
 	 /**
      * Prepares the parametres to be passed pdo's bindParam
      *
-     * @param string $action        The query action to be executed.
      * @param string $table         The name of the table.
      * @param array  $params        The parameters array passed by the user.
      *
@@ -26,66 +14,28 @@ class Parameters {
      * 
      * @throws \Exception           Wrong type of parameter passed.
      */
-    public function prepareParameters(string $action, string $table, $params)
-    {
+    public function prepareParameters(string $table, $params) {
+    
         if(is_array($params) === false)
             throw new \Exception('Wrong parameter type passed.');
-
-        $parameterValidation = new ParametersValidation();
-        $parameterValidation->matchRequired($params, $this->getRequiredParameters($action, $table));
         
-        $params = array_diff_key($params, array('options' => 1, 'condition' => 1, 'return' => 1, 'to_update' => 1));
+        $params = array_diff_key($params, array('options' => 1, 'condition' => 1));
 
-        $bindParams = $this->extractParameters($params);
-        
+        $bindParams = $this->extractParameters($params, $table);
+
         return $bindParams;
     }
 
     /**
-    * Returns required parameters for the query action.
+    * Checks if the field exists.
     *
-    * @param string $action     The query action to be executed.
+    * @param mixed $field       The field name.
     * @param string $table      The table name.
-    *
-    * @return array $required   The required parameters array.
     */
-    private function getRequiredParameters($action, $table) {
-        switch($action) {
-            case 'update':
-                $required = array('to_update', 'updated');
-                break;
-            case 'value':
-                $required = array('return');
-                break;
-            case 'insert':
-                $required = $this->sets->getRequiredColumns($table);
-                break;
-            default:
-                $required = array();
-        }
-
-        return $required;
+    protected function checkFieldExists($field, $table) {
+        if(!in_array($field, $this->sets->getColumns($table), true))
+            throw new \Exception('Field '.$field.' was not found.');
     }
 
-    /**
-    * Checks if the required parameters are passed.
-    * Extracts all the parameters from the api call
-    *
-    * @param $params        The parameters array passed by the user.
-    *
-    * @return array         The extracted parameters array.
-    */
-    private function extractParameters(array $params) {
-        
-        $bindParams = array();
-
-        foreach ($params as $field => $param) {
-            if (is_array($param)) {
-                    $param = array_values($param)[count($param)-1];
-            }
-                $bindParams[] = $param;
-        }
-
-        return array_values($bindParams);
-    }
+    protected abstract function extractParameters(array $params, string $table = null);
 }

@@ -16,25 +16,22 @@ Prerequisites: SQL DBMS (mysql, sqlite etc), php, PDO module.
 To install EasySQL you need to install the modules needed from the directory
 where composer.json is, by executing:
 
+```
 composer install
+```
 
 Create a database.
 
-After that you should create the XML Schemata for the tables you want to create.
-There is a test xml schema file named test_users as an example in the Schemata directory.
-If you don't want the table test_users to be created delete this file.
+Then execute the build.php file
 
-Then go to the build folder, execute the build.php file as: php build.php
+```
+ php build.php
+```
+
 complete all the needed information and you are ready to go.
 
 The .env direcotry should be outside of the document root since it contains the
 database credentials.
-
-# Clean
-
-If you want to clean everything and rebuild the you should run php clean.php from
-the build directory. This will remove all the tables and records in the database,
-all the DAO files for your table objects and all the database crendentials saved.
 
 # Usage
 
@@ -73,7 +70,6 @@ Now we want to perform some action using the EasySQL API.
 ## Actions
 
 - Get
-- Value
 - Update
 - Insert
 - Delete
@@ -92,8 +88,12 @@ easy_sql('test_users', 'GET', array());
 easy_sql('test_users', 'GET', array('options' => array('limit' => 1)));
 
 easy_sql('test_users', 'GET', array('options' => array('order' => 'username DESC')));
+```
 
-easy_sql('test_users', 'GET', array('options' => array('limit' => 1, 'order' => 'username DESC')));
+- If you want to combine these two ordering should always preceed limit:
+
+```
+easy_sql('test_users', 'GET', array('options' => array('order' => 'username DESC', 'limit' => 1)));
 ```
 
 - The API call to get all the values from the row with id equal to 1 is:
@@ -120,13 +120,13 @@ easy_sql('test_users', 'GET', array('id' => 1, array('id' => 2), 'condition' => 
 - The API call to get a certain value (in this case username) from the rows is:
 
 ```
-easy_sql('test_users', 'VALUE', array('return' => 'username'));
+easy_sql('test_users', 'GET', array('return' => 'username'));
 ```
 
 or if you want to return multiple values:
 
 ```
-easy_sql('test_users', 'VALUE', array('return' => array('username', 'password')));
+easy_sql('test_users', 'GET', array('return' => array('username', 'password')));
 ```
 
 - The API call to update a certain row is:

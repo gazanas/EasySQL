@@ -4,7 +4,7 @@ namespace EasySQL\Src\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 
-use EasySQL\Src\Data as Data;
+use EasySQL\Src\Sets as Sets;
 
 final class SetsTest extends TestCase
 {
@@ -67,7 +67,7 @@ final class SetsTest extends TestCase
     }
 
     public function testGetTablesReturnsArrayContainingTableNames() {
-    	$dbinfo = new Data\Sets($this->db);
+    	$dbinfo = new Sets\Sets($this->db);
 
     	$tables = $dbinfo->getTables('test');
 
@@ -79,7 +79,7 @@ final class SetsTest extends TestCase
     }
 
     public function testGetColumnsReturnsArrayContainingTableColumnNames() {
-    	$dbinfo = new Data\Sets($this->db);
+    	$dbinfo = new Sets\Sets($this->db);
 
     	$columns = $dbinfo->getColumns('test_users');
 
@@ -98,7 +98,7 @@ final class SetsTest extends TestCase
     }
 
     public function testGetColumnsThrowsExceptionWhenTableDoesNotExist() {
-        $dbinfo = new Data\Sets($this->db);
+        $dbinfo = new Sets\Sets($this->db);
 
         $this->expectException(\Exception::class);
 
@@ -106,7 +106,7 @@ final class SetsTest extends TestCase
     }
 
     public function testGetColumnInfoReturnsArrayContainingAllTheColumnsInfo() {
-        $dbinfo = new Data\Sets($this->db);
+        $dbinfo = new Sets\Sets($this->db);
 
         $columns_info = $dbinfo->getColumnsInfo('test_users');
         $expected = array (
@@ -186,7 +186,7 @@ final class SetsTest extends TestCase
     }
 
     public function testGetColumnInfoThrowsExceptionWhenTableDoesNotExist() {
-        $dbinfo = new Data\Sets($this->db);
+        $dbinfo = new Sets\Sets($this->db);
 
         $this->expectException(\Exception::class);
 
@@ -194,7 +194,7 @@ final class SetsTest extends TestCase
     }
 
     public function testGetRequiredColumnsThrowsExceptionlWhenTableDoesNotExist() {
-        $dbinfo = new Data\Sets($this->db);
+        $dbinfo = new Sets\Sets($this->db);
 
         $this->expectException(\Exception::class);
 
@@ -202,7 +202,7 @@ final class SetsTest extends TestCase
     }
 
     public function testGetAutoCompletedColumnsReturnsArrayContainingTheColumnsNamesThatHaveAutoCompletedValues() {
-    	$dbinfo = new Data\Sets($this->db);
+    	$dbinfo = new Sets\Sets($this->db);
 
     	$autos = $dbinfo->getAutoCompleted('test_users');
 

@@ -2,35 +2,32 @@
 
 namespace EasySQL\Src\Data;
 
+use EasySQL\Src\API as API;
 use EasySQL\Src\Query as Query;
 use EasySQL\Src\Parameters as Parameters;
+use EasySQL\Src\Sets as Sets;
 
-class DAO implements DAOInterface
-{
+class DAO implements DAOInterface {
 
-    protected $db;
-    protected $sql;
-    protected $sets;
-    protected $table;
-    protected $params;
-    protected $preparedParameters;
-    protected $query;
+    private $sql;
+    private $sets;
+    private $table;
+    private $params;
+    private $preparedParameters;
+    private $query;
 
     /**
     * Initializes the data access object, prepares the parameters and constructs the
     * query for execution on the database.
     *
-    * @param Sets $sets         The sets object.
-    * @param string $table      The table name.
-    * @param string $action     The query action to be executed.
-    * @param array $params      The parameters array passed by the user.
-    * @param \PDO $db           The database object. 
+    * @param SQL $sql            The sql object. 
+    * @param Sets\Sets $sets     The sets object.
+    * @param string $table       The table name.
+    * @param string $action      The query action to be executed.
     */
-    public function __construct($sets, string $table, string $action, $params, $db)
-    {
-        $this->db = $db;
-
-        $this->sql    = new SQL($this->db);
+    public function __construct(SQL $sql, Sets\Sets $sets, Parameters\Parameters $parameters, Query\Query $query, string $table, array $params) {
+        
+        $this->sql = $sql;
 
         $this->sets = $sets;
 
@@ -38,13 +35,9 @@ class DAO implements DAOInterface
 
         $this->params = $params;
 
-        $parametersObject = new Parameters\Parameters($this->sets);
+        $this->preparedParameters = $parameters->prepareParameters($this->table, $this->params);
 
-        $this->preparedParameters = $parametersObject->prepareParameters($action, $this->table, $this->params);
-
-        $queryObject = new Query\Query();
-        
-        $this->query = $queryObject->setUpQuery($this->sets, $action, $this->table, $this->params);
+        $this->query = $query->setUpQuery($sets, $this->table, $this->params);
         
     }
 
@@ -54,35 +47,19 @@ class DAO implements DAOInterface
      *
      * @return array
      */
-    public function get()
-    {        
+    public function get() { 
         return $this->sql->executeQuery($this->query, $this->preparedParameters);
     }
-
-
-    /**
-     *   Returns a certain column from the rows of the table
-     *
-     * @return array
-     */
-    public function value()
-    {
-        // Fetch the query result
-        return $this->sql->executeQuery($this->query, $this->preparedParameters);
-    }
-
 
     /**
      *   Updates a column of the table
      *
      * @return string
      */
-    public function update()
-    {
-        $getDAO = new self($this->sets, $this->table, 'get', array_diff_key($this->params, array_flip(array('to_update', 'updated'))), $this->db);
-        if(empty((array)$getDAO->get()))
-            throw new \Exception('The row you are trying to update does not exist.');
-        
+    public function update() {
+        $api = new API\API($this->sets);   
+        if(empty($api->_easy_sql($this->sql, $this->table, 'get', array_diff_key($this->params, array('to_update' => 1, 'updated' => 1)))))
+            throw new \Exception('The row you are trying to update doesn\'t exist.');  
         return $this->sql->executeQuery($this->query, $this->preparedParameters, 1);
     }
 
@@ -91,12 +68,10 @@ class DAO implements DAOInterface
      *
      * @return string
      */
-    public function delete()
-    {
-        $getDAO = new self($this->sets, $this->table, 'get', array_diff_key($this->params, array_flip(array('return'))), $this->db);
-        if(empty((array)$getDAO->get()))
-            throw new \Exception('The row you are trying to delete does not exist.');
-
+    public function delete() {
+        $api = new API\API($this->sets);   
+        if(empty($api->_easy_sql($this->sql, $this->table, 'get', $this->params)))
+            throw new \Exception('The row you are trying to delete doesn\'t exist.');  
         return $this->sql->executeQuery($this->query, $this->preparedParameters, 1);
     }
 
@@ -106,8 +81,7 @@ class DAO implements DAOInterface
      *
      * @return string
      */
-    public function insert()
-    {
+    public function insert() {
         return $this->sql->executeQuery($this->query, $this->preparedParameters, 1);
     }
 }

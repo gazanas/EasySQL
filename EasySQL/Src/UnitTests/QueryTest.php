@@ -5,7 +5,7 @@ namespace EasySQL\Src\UnitTests;
 use PHPUnit\Framework\TestCase;
 
 use EasySQL\Src\Query as Query;
-use EasySQL\Src\Data as Data;
+use EasySQL\Src\Sets as Sets;
 
 final class QueryTest extends TestCase
 {
@@ -13,9 +13,11 @@ final class QueryTest extends TestCase
     protected $db;
     protected static $database;
 
+    protected $sets;
+    protected $sql;
+
     public static function setUpBeforeClass() {
         self::$database = new Connection();
-
         self::$database->createDatabase();
 
     }    
@@ -51,6 +53,8 @@ final class QueryTest extends TestCase
             "
         );
 
+        $this->sets = new Sets\Sets($this->db);
+
     }
 
 
@@ -67,32 +71,10 @@ final class QueryTest extends TestCase
 
     }
 
-    public function testSetupInvalidGenericQueryUsingInvalidParametersType() {         
-        $sets = new Data\Sets($this->db);
-
-        $query = new Query\Query();
-        
-        $this->expectException(\Exception::class);
-
-        $query->setUpQuery($sets, 'invalid action', 'test_users', 'bogus parameters');
-    
-    }
-
-    public function testSetupInvalidGenericQueryUsingInvalidAction() {
-        $sets = new Data\Sets($this->db);
-
-        $query = new Query\Query();
-
-        $this->expectException(\Exception::class);
-
-        $query->setUpQuery($sets, 'invalid action', 'test_users', array());
-    }
-
     public function testSetupValidGetQueryWithoutParameters() {         
-        $sets = new Data\Sets($this->db);
-        
-        $getQuery = new Query\Query();
-        $get = $getQuery->setUpQuery($sets, 'get', 'test_users', array());
+        $getQuery = new Query\GetQuery();
+
+        $get = $getQuery->setUpQuery($this->sets, 'test_users', array());
         
         $expected = 'SELECT * FROM test_users';
 
@@ -100,21 +82,19 @@ final class QueryTest extends TestCase
     }
 
     public function testSetupValidGetQueryIncludingValidParameters() {
-        $sets = new Data\Sets($this->db);
-        
-        $getQuery = new Query\Query();
-        $get = $getQuery->setUpQuery($sets, 'get', 'test_users', array('id' => 1));
+        $getQuery = new Query\GetQuery();
+
+        $get = $getQuery->setUpQuery($this->sets, 'test_users', array('id' => 1));
 
         $expected = 'SELECT * FROM test_users WHERE id = ?';
 
         $this->assertSame($get, $expected);
     }
 
-    public function testSetupValueQueryWithTheRightActionParameterPassed() {         
-        $sets = new Data\Sets($this->db);
-        
-        $valueQuery = new Query\Query();
-        $value = $valueQuery->setUpQuery($sets, 'value', 'test_users', array('return' => 'username'));
+    public function testSetupGetQueryWithTheReturnParameterPassed() {         
+        $valueQuery = new Query\GetQuery();
+
+        $value = $valueQuery->setUpQuery($this->sets, 'test_users', array('return' => 'username'));
 
         $expected = 'SELECT username FROM test_users';
 
@@ -122,10 +102,9 @@ final class QueryTest extends TestCase
     }
 
     public function testSetupUpdateQueryWithTheRightActionParametersPassed() {         
-        $sets = new Data\Sets($this->db);
-        
-        $updateQuery = new Query\Query();
-        $update = $updateQuery->setUpQuery($sets, 'update', 'test_users', array('to_update' => 'username', 'updated' => 'test_update'));
+        $updateQuery = new Query\UpdateQuery();
+
+        $update = $updateQuery->setUpQuery($this->sets, 'test_users', array('to_update' => 'username', 'updated' => 'test_update'));
 
         $expected = 'UPDATE test_users SET username = ?';
 
@@ -133,10 +112,9 @@ final class QueryTest extends TestCase
     }
 
     public function testSetupDeleteQuery() {
-        $sets = new Data\Sets($this->db);
+        $deleteQuery = new Query\DeleteQuery();
 
-        $deleteQuery = new Query\Query();
-        $delete = $deleteQuery->setUpQuery($sets, 'delete', 'test_users', array());
+        $delete = $deleteQuery->setUpQuery($this->sets, 'test_users', array());
 
         $expected = 'DELETE FROM test_users';
 
@@ -153,10 +131,9 @@ final class QueryTest extends TestCase
                     'created_at' => '2018-05-22'
                 );
 
-        $sets = new Data\Sets($this->db);
-
-        $insertQuery = new Query\Query();
-        $insert = $insertQuery->setUpQuery($sets, 'insert', 'test_users', $parameters);
+        $insertQuery = new Query\InsertQuery();
+        
+        $insert = $insertQuery->setUpQuery($this->sets, 'test_users', $parameters);
         
         $expected = 'INSERT INTO test_users(id, username, mail, password, role, created_at) VALUES(NULL,?,?,?,?,?)';
 
@@ -173,10 +150,9 @@ final class QueryTest extends TestCase
                     'created_at' => '2018-05-22'
                 );
 
-        $sets = new Data\Sets($this->db);
+        $insertQuery = new Query\InsertQuery();
 
-        $insertQuery = new Query\Query();
-        $insert = $insertQuery->setUpQuery($sets, 'insert', 'test_users', $parameters);
+        $insert = $insertQuery->setUpQuery($this->sets, 'test_users', $parameters);
         
         $expected = 'INSERT INTO test_users(id, username, mail, password, is_active, role, created_at) VALUES(NULL,?,?,?,?,?,?)';
 
