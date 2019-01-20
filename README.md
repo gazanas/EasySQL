@@ -157,3 +157,7 @@ easy_sql('test_users', 'INSERT', array('username' => 'george', 'mail' => 'george
 ```
 easy_sql('test_users', 'DELETE', array('id' => 2));
 ```
+
+# TODO 
+
+Exception handling
