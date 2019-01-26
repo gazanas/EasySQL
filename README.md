@@ -1,4 +1,4 @@
-# Read Me
+## Read Me
 
 EasySQL is a PHP API that allows users to perform simple SQL queries
 in a one liner code. EasySQL uses prepared statements to avoid SQL injections.
@@ -9,7 +9,7 @@ passed by the user. The UI is under the EasySQL/UI directory.
 This makes the execution of the SQL queries really easy.
 At this moment UI does not provide multiple values selection even though the api does.
 
-# Installation
+## Installation
 
 Prerequisites: SQL DBMS (mysql, sqlite etc), php, PDO module.
 
@@ -33,13 +33,13 @@ complete all the needed information and you are ready to go.
 The .env direcotry should be outside of the document root since it contains the
 database credentials.
 
-# Usage
+## Usage
 
 The api call is a single liner as such:
 
 (new API())->action(table)->more()
 
-# Documentation
+## Documentation
 
 Let's say we have this table named users
 ```
@@ -186,7 +186,7 @@ We can perform a join as such
 
 The call parameters are (new API())->get(table, join, onTable, onJoin)->execute();
 
-# TODO
+## TODO
 
 Better Exception Handling
 
