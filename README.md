@@ -185,3 +185,9 @@ We can perform a join as such
 ```
 
 The call parameters are (new API())->get(table, join, onTable, onJoin)->execute();
+
+# TODO
+
+Better Exception Handling
+
+Make the api syntax easier (mainly on join)
