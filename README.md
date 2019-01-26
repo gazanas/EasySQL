@@ -16,35 +16,32 @@ Prerequisites: SQL DBMS (mysql, sqlite etc), php, PDO module.
 To install EasySQL you need to install the modules needed from the directory
 where composer.json is, by executing:
 
+```
 composer install
+```
 
 Create a database.
 
-After that you should create the XML Schemata for the tables you want to create.
-There is a test xml schema file named test_users as an example in the Schemata directory.
-If you don't want the table test_users to be created delete this file.
+Then execute the build.php file
 
-Then go to the build folder, execute the build.php file as: php build.php
+```
+ php build.php
+```
+
 complete all the needed information and you are ready to go.
 
 The .env direcotry should be outside of the document root since it contains the
 database credentials.
 
-# Clean
-
-If you want to clean everything and rebuild the you should run php clean.php from
-the build directory. This will remove all the tables and records in the database,
-all the DAO files for your table objects and all the database crendentials saved.
-
 # Usage
 
 The api call is a single liner as such:
 
-easy_sql('table name', 'action', array(parameters));
+(new API())->action(table)->more()
 
 # Documentation
 
-Let's say we have this table named test_users
+Let's say we have this table named users
 ```
 +------------+------------------+------+-----+-------------------+----------------+
 | Field      | Type             | Null | Key | Default           | Extra          |
@@ -73,7 +70,6 @@ Now we want to perform some action using the EasySQL API.
 ## Actions
 
 - Get
-- Value
 - Update
 - Insert
 - Delete
@@ -83,56 +79,59 @@ Now we want to perform some action using the EasySQL API.
 - The API call to get all the values from the rows would be:
 
 ```
-easy_sql('test_users', 'GET', array());
+(new API())->get('users')->execute();
 ```
 
 - You can limit or order the results of an API call by using:
 
 ```
-easy_sql('test_users', 'GET', array('options' => array('limit' => 1)));
+(new API())->get('users')->options(['limit' => 1])->execute();
+(new API())->get('users')->options(['order' => 'username ASC'])->execute();
+```
 
-easy_sql('test_users', 'GET', array('options' => array('order' => 'username DESC')));
+- If you want to combine these two ordering should always preceed limit:
 
-easy_sql('test_users', 'GET', array('options' => array('limit' => 1, 'order' => 'username DESC')));
+```
+(new API())->get('users')->options(['order' => 'username ASC', 'limit' => 1])->execute();
 ```
 
 - The API call to get all the values from the row with id equal to 1 is:
 
 ```
-easy_sql('test_users', 'GET', array('id' => 1));
+(new API())->get('users')->where(['id' => 1])->execute();
 ```
 
 - The API provides support for operators such as (>, <, <>, <=, >=, LIKE).
 The API call to get all the columns that have id greater than 1 is:
 
 ```
-easy_sql('test_users', 'GET', array(array('operator' => '>', 'id' => 1)));
-easy_sql('test_users', 'GET', array(array('operator' => 'LIKE', 'username' => '%da%')));
+(new API())->get('users')->where([['operator' => '>', 'id' => 1]])->execute();
+(new API())->get('users')->where([['operator' => 'LIKE', 'username' => '%da%']])->execute();
 ```
 
 - The API provides support for conditions (AND, OR).
 The API call to get the columns that have id 1 or 2 is:
 
 ```
-easy_sql('test_users', 'GET', array('id' => 1, array('id' => 2), 'condition' => array('OR')));
+(new API())->get('users')->where(['id' => 1, ['id' => 2], 'condition' => ['OR']])->execute();
 ```
 
 - The API call to get a certain value (in this case username) from the rows is:
 
 ```
-easy_sql('test_users', 'VALUE', array('return' => 'username'));
+(new API())->get('users')->return('username')->execute();
 ```
 
 or if you want to return multiple values:
 
 ```
-easy_sql('test_users', 'VALUE', array('return' => array('username', 'password')));
+(new API())->get('users')->return('username', 'mail')->execute();
 ```
 
 - The API call to update a certain row is:
 
 ```
-easy_sql('test_users', 'UPDATE', array('to_update' => 'username', 'updated' => 'root', 'id' => 1));
+(new API())->update('users')->set('username', 'root')->where(['id' => 1])->execute();
 ```
 
 This will change the admin username to root.
@@ -149,11 +148,40 @@ the parameters array.
 The api call to insert a new row is:
 
 ```
-easy_sql('test_users', 'INSERT', array('username' => 'george', 'mail' => 'george@example.com', 'password' => 'secret', 'is_active' => 0, 'role' => 'user', 'created_at' => '2018-06-02 00:00:00'));
+(new API())->insert('users')->values(['username' => 'george', 'mail' => 'george@example.com', 'password' => 'secret', 'is_active' => 0, 'role' => 'user', 'created_at' => '2018-06-02 00:00:00'])->execute();
 ```
 
 - The api call to delete the user dani is:
 
 ```
-easy_sql('test_users', 'DELETE', array('id' => 2));
+(new API())->delete('users')->where(['id' => 2])->execute();
 ```
+
+- You can also perform a join on two tables
+
+Lets say we have a second table named info
+```
++---------+-------------+------+-----+---------+----------------+
+| Field   | Type        | Null | Key | Default | Extra          |
++---------+-------------+------+-----+---------+----------------+
+| id      | int(11)     | NO   | PRI | NULL    | auto_increment |
+| user_id | int(11)     | NO   | MUL | NULL    |                |
+| address | varchar(25) | NO   |     | NULL    |                |
++---------+-------------+------+-----+---------+----------------+
+```
+That contains these values 
+```
++----+---------+-------------------+
+| id | user_id | address           |
++----+---------+-------------------+
+|  1 |       1 | Some address 134  |
++----+---------+-------------------+
+```
+We can perform a join as such
+
+```
+(new API())->get('users', 'info', 'id', 'user_id')->execute();
+(new API())->get('users', 'info', 'id', 'user_id')->return('username', 'info.address')->execute();
+```
+
+The call parameters are (new API())->get(table, join, onTable, onJoin)->execute();

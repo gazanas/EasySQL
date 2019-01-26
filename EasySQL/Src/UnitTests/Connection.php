@@ -15,17 +15,22 @@ class Connection
 
     /**
      * Connect to the database.
-     *
      */
     public function __construct()
     {
     }
 
-    public function createDatabase() {
+    public function createDatabase()
+    {
         try {
-            $config = $this->getDatabaseConfig(); 
+            $config = $this->getDatabaseConfig();
             // Connect to database or throw error message.
+            if(!isset($config[5])) {
+                $config[5] = null;
+            }
+
             $this->db = new \PDO($config[1].':host='.$config[2], $config[3], $config[5]);
+            
             $this->db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (\PDOException $e) {
@@ -36,10 +41,14 @@ class Connection
         $this->db = null;
     }
 
-    public function dropDatabase() {
+    public function dropDatabase()
+    {
         try {
             $config = $this->getDatabaseConfig(); 
             // Connect to database or throw error message.
+            if(!isset($config[5])) {
+                $config[5] = null;
+            }
             $this->db = new \PDO($config[1].':host='.$config[2], $config[3], $config[5]);
             $this->db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -58,6 +67,8 @@ class Connection
      **/
     private function getDatabaseConfig()
     {
+        $matches = [];
+        
         $config = array();
         $dbIni = file_get_contents(dirname(__DIR__, 3).'/.env/database/config.ini');
 
@@ -80,6 +91,10 @@ class Connection
     public function getDB()
     {
         $config = $this->getDatabaseConfig(); 
+
+        if(!isset($config[5])) {
+            $config[5] = null;
+        }
 
         $this->db = new \PDO(
             $config[1].':host='.$config[2].';dbname=test',

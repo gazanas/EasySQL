@@ -20,13 +20,17 @@ class Connection
     {
         try {
             $config = $this->getDatabaseConfig(); 
+            if(!isset($config[5])) {
+                $config[5] = null;
+            }
             // Connect to database or throw error message.
             $this->db = new \PDO($config[1].':host='.$config[2].';dbname='.$config[4], $config[3], $config[5]);
             $this->db->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            return $this;
         } catch (\PDOException $e) {
-            echo 'Error!: '.$e->getMessage().'<br/>';
-            die();
+            print('Error!: '.$e->getMessage().'<br/>');
+            return;
         }
     }
 
@@ -37,6 +41,7 @@ class Connection
      **/
     private function getDatabaseConfig()
     {
+        $matches = [];
         $config = array();
         $dbIni = file_get_contents(dirname(__DIR__, 3).'/.env/database/config.ini');
 

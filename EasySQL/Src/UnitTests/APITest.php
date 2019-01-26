@@ -4,7 +4,7 @@ namespace EasySQL\Src\UnitTests;
 
 use \PHPUnit\Framework\TestCase;
 
-use EasySQL\Src\API as API;
+use EasySQL\Src\API\API;
 
 final class APITest extends TestCase
 {
@@ -12,14 +12,15 @@ final class APITest extends TestCase
     protected $db;
     protected static $database;
 
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass()
+    {
         self::$database = new Connection();
-
         self::$database->createDatabase();
 
     }    
 
-    public function setUp() {
+    public function setUp()
+    {
 
         $database = new Connection();
 
@@ -53,12 +54,14 @@ final class APITest extends TestCase
     }
 
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->db->query("DROP TABLE `test_users`");
         $this->db = null;
     }
 
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass()
+    {
 
         self::$database->dropDatabase();
 
@@ -66,59 +69,51 @@ final class APITest extends TestCase
 
     }
 
-    public function testAPICallThrowsExceptionWhenWrongDataSetIsPassed() {
-
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('<invalid data set>', 'get', array('id' => 1));
-    }
-
-    public function testReturnFalseWhenWrongActionIsPassed() {
-
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
+    public function testAPICallThrowsExceptionWhenWrongDataSetIsPassed()
+    {        
+        $this->expectOutputString('Table invalid was not found.');
         
-        $data = $api->_easy_sql('test_users', '<invalid action>', array('id' => 1));
-
+        (new API($this->db))->get('invalid')->where(['id' => 1]);
+    }
+    
+    public function testReturnFalseWhenWrongActionIsPassed()
+    {
+        $this->expectException(\Error::class);
+        
+        (new API($this->db))->invalid('invalid')->where(['id' => 1])->execute();
     }
 
-    public function testAPICallThrowsExceptionWhenParametersPassedIsNotAnArray() {
-
-        $api = new API\API($this->db);
-
+    
+    public function testAPICallThrowsExceptionWhenParametersPassedIsNotAnArray()
+    {
         $this->expectException(\TypeError::class);
         
-        $data = $api->_easy_sql('test_users', 'get', '<invalide parameter type>');
-
+        (new API($this->db))->get('test_users')->where('hello');
     }
 
-    public function testAPICallThrowsExceptionWhenParametersPassedAreInvalid() {
-
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'get', array('pet' => 'dog'));
-
+    
+    public function testAPICallThrowsExceptionWhenParametersPassedAreInvalid()
+    {
+        $this->expectOutputString('Field pet was not found.');
+        
+        (new API($this->db))->get('test_users')->where(['pet' => 'dog']);
     }
+    
+    
+    public function testAPIGetCallReturnsEmptyArrayWhenRowIsNotFound()
+    {
 
-    public function testAPIGetCallReturnsEmptyArrayWhenRowIsNotFound() {
-        $api = new API\API($this->db);
-
-        $data = $api->_easy_sql('test_users', 'get', array('id' => 999));
-
+        $data = (new API($this->db))->get('test_users')->where(['id' => 999])->execute();
+        
         $expected = array();
 
         $this->assertEquals($data, $expected);
     }
-
-    public function testAPIGetCallSuccess() {
-        $api = new API\API($this->db);
-
-        $data = $api->_easy_sql('test_users', 'get', array('id' => 1));
+    
+    
+    public function testAPIGetCallReturnsCorrectResults()
+    {
+        $data = (new API($this->db))->get('test_users')->where(['id' => 1])->execute();
 
         $expected = array(
             array(
@@ -135,38 +130,19 @@ final class APITest extends TestCase
 
         $this->assertEquals($data, $expected);
     }
+   
+    
+    public function testAPIGetCallThrowsExceptionWhenFieldToReturnDoesNotExist()
+    {
+        $this->expectOutputString('Field bogus was not found.');
 
-    public function testAPIValueCallThrowsExceptionWhenActionParameterIsMissing() {
-
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'value', array('id' => 1));
+        (new API($this->db))->get('test_users')->return('bogus');
     }
-
-    public function testAPIValueCallReturnsEmptyArrayWhenRowIsNotFound() {
-        $api = new API\API($this->db);
-
-        $data = $api->_easy_sql('test_users', 'value', array('return' => 'username', 'id' => 999));
-
-        $expected = array();
-
-        $this->assertEquals($data, $expected);
-    }
-
-    public function testAPIValueCallThrowsExceptionWhenFieldToReturnDoesNotExist() {
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'value', array('return' => 'bogus_field', 'id' => 1));
-    }
-
-    public function testAPIValueCallReturnOneFieldSuccess() {
-        $api = new API\API($this->db);
-
-        $data = $api->_easy_sql('test_users', 'value', array('return' => 'username', 'id' => 1));
+    
+    
+    public function testAPIGetCallReturnOneFieldSuccessfully()
+    {
+        $data = (new API($this->db))->get('test_users')->return('username')->where(['id' => 1])->execute();
 
         $expected = array(
             array(
@@ -176,11 +152,10 @@ final class APITest extends TestCase
 
         $this->assertEquals($data, $expected);
     }
-
-    public function testAPIValueCallReturnMultipleFieldsSuccess() {
-        $api = new API\API($this->db);
-
-        $data = $api->_easy_sql('test_users', 'value', array('return' => array('username', 'password'), 'id' => 1));
+    
+    public function testAPIGetCallReturnMultipleFieldsSuccessfully()
+    {
+        $data = (new API($this->db))->get('test_users')->return('username', 'password')->where(['id' => 1])->execute();
 
         $expected = array(
             array(
@@ -192,78 +167,47 @@ final class APITest extends TestCase
         $this->assertEquals($data, $expected);
     }
 
-    public function testAPIUpdateCallThrowsExceptionWhenActionParameterIsMissing() {
-        $api = new API\API($this->db);
+    public function testAPIUpdateCallThrowsExceptionWhenParameterIsMissing()
+    {
+        $this->expectException(\ArgumentCountError::class);
 
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'update', array('to_update' => 'username', 'id' => 1));
+        (new API($this->db))->update('test_users')->set('username')->where(['id' => 1])->execute();
     }
+    
+    public function testAPIUpdateCallThrowsExceptionWhenRowToUpdateDoesNotExist()
+    {
+        $this->expectOutputString('Field bogus was not found.');
 
-    public function testAPIUpdateCallThrowsExceptionWhenParameterFieldPassedDoesNotExist() {
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'update', array('to_update' => 'username', 'updated' => 'test_user', 'bogus_parameter' => 1));
+        (new API($this->db))->update('test_users')->set('bogus', 'test');
     }
+    
+    public function testAPIUpdateCallThrowsExceptionWhenUpdateDuplicatedValueOnUniqueColumn()
+    {
+        $this->expectOutputString('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry \'root\' for key \'username\'');
 
-    public function testAPIUpdateCallThrowsExceptionWhenRowToUpdateDoesNotExist() {
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'update', array('to_update' => 'username', 'updated' => 'test_user', 'id' => 999));
+        (new API($this->db))->update('test_users')->set('username', 'root')->where(['id' => 2])->execute();
     }
+    
+    public function testAPIUpdateCallSuccess()
+    {
+        $data = (new API($this->db))->update('test_users')->set('username', 'admin')->where(['id' => 1])->execute();
 
-    public function testAPIUpdateCallThrowsExceptionWhenUpdateDuplicatedValueOnUniqueColumn() {
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'update', array('to_update' => 'username', 'updated' => 'root', 'id' => 2));
-    }
-
-    public function testAPIUpdateCallThrowsExceptionWhenFieldToUpdateDoesNotExist() {
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'update', array('to_update' => 'bogus_field', 'updated' => 1));        
-    }
-
-
-    public function testAPIUpdateCallSuccess() {
-        $api = new API\API($this->db);
-
-        $data = $api->_easy_sql('test_users', 'update', array('to_update' => 'username', 'id' => 1, 'updated' => 'admin'));
-
-        $expected = 'Query Executed Successfully';
+        $expected = [];
 
         $this->assertEquals($data, $expected);
     }
+    
+    public function testAPIDeleteCallSuccess()
+    {
+        $data = (new API($this->db))->delete('test_users')->where(['id' => 1])->execute();
 
-    public function testAPIDeleteCallThrowsExceptionWhenRowToDeleteDoesNotExist() {
-        $api = new API\API($this->db);
-
-        $this->expectException(\Exception::class);
-
-        $data = $api->_easy_sql('test_users', 'delete', array('id' => 999));
-    }
-
-    public function testAPIDeleteCallSuccess() {
-        $api = new API\API($this->db);
-
-        $data = $api->_easy_sql('test_users', 'delete', array('id' => 1));
-
-        $expected = 'Query Executed Successfully';
+        $expected = [];
 
         $this->assertEquals($data, $expected);
     }
-
-    public function testAPIInsertCallThrowsExceptionWhenRequiredColumnParameterIsMissing() {
-        $api = new API\API($this->db);
-
+    
+    public function testAPIInsertCallThrowsExceptionWhenRequiredColumnParameterIsMissing()
+    {
         $params = array(
             //missing username
             'mail' => 'test@example.com',
@@ -272,14 +216,13 @@ final class APITest extends TestCase
             'role' => 'user'
         );
 
-        $this->expectException(\Exception::class);
+        $this->expectOutputString('Missing Required Fields (username)');
 
-        $data = $api->_easy_sql('test_users', 'insert', $params);
+        (new API($this->db))->insert('test_users')->values($params);
     }
-
-    public function testAPIInsertCallThrowsExceptionWhenDuplicatedValueOnUniqueColumn() {
-        $api = new API\API($this->db);
-
+    
+    public function testAPIInsertCallThrowsExceptionWhenDuplicatedValueOnUniqueColumn()
+    {
         $params = array(
             'username' => 'root', //Duplicate
             'mail' => 'test@example.com',
@@ -288,14 +231,13 @@ final class APITest extends TestCase
             'role' => 'user'
         );
 
-        $this->expectException(\Exception::class);
+        $this->expectOutputString('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry \'root\' for key \'username\'');
 
-        $data = $api->_easy_sql('test_users', 'insert', $params);
+        (new API($this->db))->insert('test_users')->values($params)->execute();
     }
-
-    public function testAPIInsertCallSuccess() {
-        $api = new API\API($this->db);
-
+    
+    public function testAPIInsertCallSuccess()
+    {
         $params = array(
             'username' => 'test_user', //Duplicate
             'mail' => 'test@example.com',
@@ -304,10 +246,8 @@ final class APITest extends TestCase
             'role' => 'user'
         );
 
-        $data = $api->_easy_sql('test_users', 'insert', $params);
+        $data = (new API($this->db))->insert('test_users')->values($params)->execute();
 
-        $expected = 'Query Executed Successfully';
-
-        $this->assertEquals($data, $expected);
+        $this->assertEquals([], $data);
     }
 }

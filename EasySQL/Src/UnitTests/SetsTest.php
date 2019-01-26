@@ -4,7 +4,7 @@ namespace EasySQL\Src\UnitTests;
 
 use PHPUnit\Framework\TestCase;
 
-use EasySQL\Src\Data as Data;
+use EasySQL\Src\Sets\Sets;
 
 final class SetsTest extends TestCase
 {
@@ -12,14 +12,16 @@ final class SetsTest extends TestCase
     protected $db;
     protected static $database;
 
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass()
+    {
         self::$database = new Connection();
 
         self::$database->createDatabase();
 
     }    
 
-    public function setUp() {
+    public function setUp()
+    {
 
         $database = new Connection();
 
@@ -53,12 +55,14 @@ final class SetsTest extends TestCase
     }
 
 
-    public function tearDown() {
+    public function tearDown()
+    {
         $this->db->query("DROP TABLE `test_users`");
         $this->db = null;
     }
 
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass()
+    {
 
         self::$database->dropDatabase();
 
@@ -66,47 +70,51 @@ final class SetsTest extends TestCase
 
     }
 
-    public function testGetTablesReturnsArrayContainingTableNames() {
-    	$dbinfo = new Data\Sets($this->db);
+    public function testGetTablesReturnsArrayContainingTableNames()
+    {
+        $dbinfo = new Sets($this->db);
 
-    	$tables = $dbinfo->getTables('test');
+        $tables = $dbinfo->getTables('test');
 
-    	$expected = array(
-    		'test_users'
-    	);
+        $expected = array(
+        'test_users'
+        );
 
-    	$this->assertSame($tables, $expected);
+        $this->assertSame($tables, $expected);
     }
 
-    public function testGetColumnsReturnsArrayContainingTableColumnNames() {
-    	$dbinfo = new Data\Sets($this->db);
+    public function testGetColumnsReturnsArrayContainingTableColumnNames()
+    {
+        $dbinfo = new Sets($this->db);
 
-    	$columns = $dbinfo->getColumns('test_users');
+        $columns = $dbinfo->getColumns('test_users');
 
-    	$expected = array(
-    		'id',
-    		'username',
-    		'mail',
-    		'password',
-    		'is_active',
-    		'role',
-    		'created_at',
-    		'updated_at'
-    	);
+        $expected = array(
+        'id',
+        'username',
+        'mail',
+        'password',
+        'is_active',
+        'role',
+        'created_at',
+        'updated_at'
+        );
 
-    	$this->assertSame($columns, $expected);
+        $this->assertSame($columns, $expected);
     }
 
-    public function testGetColumnsThrowsExceptionWhenTableDoesNotExist() {
-        $dbinfo = new Data\Sets($this->db);
+    public function testGetColumnsThrowsExceptionWhenTableDoesNotExist()
+    {
+        $dbinfo = new Sets($this->db);
 
         $this->expectException(\Exception::class);
 
-        $columns = $dbinfo->getColumns('<invalid data set>');
+        $dbinfo->getColumns('<invalid data set>');
     }
 
-    public function testGetColumnInfoReturnsArrayContainingAllTheColumnsInfo() {
-        $dbinfo = new Data\Sets($this->db);
+    public function testGetColumnInfoReturnsArrayContainingAllTheColumnsInfo()
+    {
+        $dbinfo = new Sets($this->db);
 
         $columns_info = $dbinfo->getColumnsInfo('test_users');
         $expected = array (
@@ -115,7 +123,7 @@ final class SetsTest extends TestCase
                     'Type' => 'int(10) unsigned',
                     'Null' => 'NO',
                     'Key' => 'PRI',
-                    'Default' => NULL,
+                    'Default' => null,
                     'Extra' => 'auto_increment'
                 ),
 
@@ -124,7 +132,7 @@ final class SetsTest extends TestCase
                     'Type' => 'varchar(15)',
                     'Null' => 'NO',
                     'Key' => 'UNI',
-                    'Default' => NULL,
+                    'Default' => null,
                     'Extra' => ''
                 ),
 
@@ -133,7 +141,7 @@ final class SetsTest extends TestCase
                     'Type' => 'varchar(320)',
                     'Null' => 'NO',
                     'Key' => 'UNI',
-                    'Default' => NULL,
+                    'Default' => null,
                     'Extra' => ''
                 ),
 
@@ -142,7 +150,7 @@ final class SetsTest extends TestCase
                     'Type' => 'varchar(60)',
                     'Null' => 'NO',
                     'Key' => '',
-                    'Default' => NULL,
+                    'Default' => null,
                     'Extra' => ''
                 ),
 
@@ -169,7 +177,7 @@ final class SetsTest extends TestCase
                     'Type' => 'timestamp',
                     'Null' => 'YES',
                     'Key' => '',
-                    'Default' => NULL,
+                    'Default' => null,
                     'Extra' => ''
                 ),
 
@@ -185,28 +193,31 @@ final class SetsTest extends TestCase
         $this->assertSame($columns_info, $expected);
     }
 
-    public function testGetColumnInfoThrowsExceptionWhenTableDoesNotExist() {
-        $dbinfo = new Data\Sets($this->db);
+    public function testGetColumnInfoThrowsExceptionWhenTableDoesNotExist()
+    {
+        $dbinfo = new Sets($this->db);
 
         $this->expectException(\Exception::class);
 
-        $columns_info = $dbinfo->getColumnsInfo('<invalid data set>');
+        $dbinfo->getColumnsInfo('<invalid data set>');
     }
 
-    public function testGetRequiredColumnsThrowsExceptionlWhenTableDoesNotExist() {
-        $dbinfo = new Data\Sets($this->db);
+    public function testGetRequiredColumnsThrowsExceptionlWhenTableDoesNotExist()
+    {
+        $dbinfo = new Sets($this->db);
 
         $this->expectException(\Exception::class);
 
-        $columns = $dbinfo->getRequiredColumns('<invalide data set>');
+        $dbinfo->getRequiredColumns('<invalide data set>');
     }
 
-    public function testGetAutoCompletedColumnsReturnsArrayContainingTheColumnsNamesThatHaveAutoCompletedValues() {
-    	$dbinfo = new Data\Sets($this->db);
+    public function testGetAutoCompletedColumnsReturnsArrayContainingTheColumnsNamesThatHaveAutoCompletedValues()
+    {
+        $dbinfo = new Sets($this->db);
 
-    	$autos = $dbinfo->getAutoCompleted('test_users');
+        $autos = $dbinfo->getAutoCompleted('test_users');
 
-    	$expected = array(
+        $expected = array(
             array(
                 'name' => 'is_active',
                 'type' => '0'
@@ -219,12 +230,12 @@ final class SetsTest extends TestCase
                 'name' => 'updated_at',
                 'type' => 'CURRENT_TIMESTAMP'
             ),
-    		array(
-    			'name' => 'id',
-    			'type' => 'auto_increment'
-    		)
-    	);
+        array(
+        'name' => 'id',
+        'type' => 'auto_increment'
+        )
+        );
 
-    	$this->assertSame($autos, $expected);
+        $this->assertSame($autos, $expected);
     }
 }
