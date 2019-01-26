@@ -89,20 +89,10 @@ Now we want to perform some action using the EasySQL API.
 (new API())->get('users')->options(['order' => 'username ASC'])->execute();
 ```
 
-<<<<<<< HEAD
 - If you want to combine these two ordering should always preceed limit:
 
 ```
 (new API())->get('users')->options(['order' => 'username ASC', 'limit' => 1])->execute();
-=======
-easy_sql('test_users', 'GET', array('options' => array('order' => 'username DESC')));
-```
-
-- If you want to combine these two ordering should always preceed limit:
-
-```
-easy_sql('test_users', 'GET', array('options' => array('order' => 'username DESC', 'limit' => 1)));
->>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13
 ```
 
 - The API call to get all the values from the row with id equal to 1 is:
@@ -129,21 +119,13 @@ The API call to get the columns that have id 1 or 2 is:
 - The API call to get a certain value (in this case username) from the rows is:
 
 ```
-<<<<<<< HEAD
 (new API())->get('users')->return('username')->execute();
-=======
-easy_sql('test_users', 'GET', array('return' => 'username'));
->>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13
 ```
 
 or if you want to return multiple values:
 
 ```
-<<<<<<< HEAD
 (new API())->get('users')->return('username', 'mail')->execute();
-=======
-easy_sql('test_users', 'GET', array('return' => array('username', 'password')));
->>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13
 ```
 
 - The API call to update a certain row is:
@@ -175,7 +157,6 @@ The api call to insert a new row is:
 (new API())->delete('users')->where(['id' => 2])->execute();
 ```
 
-<<<<<<< HEAD
 - You can also perform a join on two tables
 
 Lets say we have a second table named info
@@ -204,8 +185,3 @@ We can perform a join as such
 ```
 
 The call parameters are (new API())->get(table, join, onTable, onJoin)->execute();
-=======
-# TODO 
-
-Exception handling
->>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13
