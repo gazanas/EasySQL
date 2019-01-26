@@ -2,8 +2,7 @@
 
 namespace EasySQL\Src\Clause;
 
-interface ClauseInterface
-{
-    
-    public function prepareClause(array $params);
+interface ClauseInterface {
+	
+	public function prepareClause($params);
 }

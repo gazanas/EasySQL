@@ -2,8 +2,12 @@
 
 namespace EasySQL\Src\Sets;
 
+<<<<<<< HEAD:EasySQL/Src/Sets/Sets.php
 class Sets extends DatabaseSets
 {
+=======
+class Sets extends DatabaseSets {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/Sets.php
 
     protected $db;
 
@@ -44,8 +48,12 @@ class Sets extends DatabaseSets
      */
     public $conditions;
 
+<<<<<<< HEAD:EasySQL/Src/Sets/Sets.php
     public function __construct($db)
     {
+=======
+    public function __construct($db) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/Sets.php
         
         $this->db = $db;
 
@@ -90,52 +98,92 @@ class Sets extends DatabaseSets
     }
 
     /**
+<<<<<<< HEAD:EasySQL/Src/Sets/Sets.php
      * Returns an array containing the action parameters.
      *
      * @return array $this->actionParameters
      */
     public function getActionParameters()
     {
+=======
+    * Returns an array containing the action parameters.
+    *
+    * @return array $this->actionParameters
+    */
+    public function getActionParameters() {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/Sets.php
         return $this->actionParameters;
     }
 
     /**
+<<<<<<< HEAD:EasySQL/Src/Sets/Sets.php
      * Returns an array with the acceptable actions.
      *
      * @return array $this->actionSet
      */
     public function getActionSet()
     {
+=======
+    * Returns an array with the acceptable actions.
+    *
+    * @return array $this->actionSet
+    */
+    public function getActionSet() {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/Sets.php
         return $this->actions;
     }
 
     /**
+<<<<<<< HEAD:EasySQL/Src/Sets/Sets.php
      * Returns an array with the acceptable options.
      *
      * @return array $this->options;
      */
     public function getOptionSet()
     {
+=======
+    * Returns an array with the acceptable options.
+    *
+    * @return array $this->options;
+    */
+    public function getOptionSet() {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/Sets.php
         return $this->options;
     }
 
     /**
+<<<<<<< HEAD:EasySQL/Src/Sets/Sets.php
      * Returns an array with the acceptable operators.
      *
      * @return array $this->operators
      */
     public function getOperatorSet()
     {
+=======
+    * Returns an array with the acceptable operators.
+    *
+    * @return array $this->operators
+    */
+    public function getOperatorSet() {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/Sets.php
         return $this->operators;
     }
 
     /**
+<<<<<<< HEAD:EasySQL/Src/Sets/Sets.php
      * Returns an array with the acceptable conditions.
      *
      * @return array $this->conditions
      */
     public function getConditionSet()
     {
+=======
+    * Returns an array with the acceptable conditions.
+    *
+    * @return array $this->conditions
+    */
+    public function getConditionSet() {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/Sets.php
         return $this->conditions;
     }
 }

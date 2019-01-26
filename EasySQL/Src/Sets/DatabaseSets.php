@@ -2,6 +2,7 @@
 
 namespace EasySQL\Src\Sets;
 
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
 use EasySQL\Src\Sets\Exceptions\TableNotFoundException;
 
 class DatabaseSets
@@ -14,6 +15,16 @@ class DatabaseSets
      */
     public function __construct($db)
     {
+=======
+class DatabaseSets {
+
+    /**
+    * Create the database sets object, with the required PDO dependency.
+    *
+    * @param \PDO $db   The PDO object.
+    */
+    public function __construct($db) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
         
         $this->db = $db;
     }
@@ -23,8 +34,12 @@ class DatabaseSets
      *
      * @return array $tables    An array that contains the names of the tables.
      */
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
     public function getTables()
     {
+=======
+    public function getTables() {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
         $query      = 'SHOW TABLES';
         // Prepare statement and execute it.
         $stmt = $this->db->prepare($query);
@@ -42,12 +57,20 @@ class DatabaseSets
     /**
      *   Returns the columns of a table
      *
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
      * @param string $set Table name.
      *
      * @return array $columns   An array that contains the column names of the table.
      */
     public function getColumns(string $set)
     {
+=======
+     * @param string $set       Table name.
+     *
+     * @return array $columns   An array that contains the column names of the table.
+     */
+    public function getColumns(string $set) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
         $column_info = $this->getColumnsInfo($set);
         $columns = array();
 
@@ -60,6 +83,7 @@ class DatabaseSets
     }
 
     /**
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
      *   Get info of the tables columns e.g.(type, default value, nullable etc)
      *
      * @param string $set Table name.
@@ -72,6 +96,18 @@ class DatabaseSets
         if(!in_array($set, $this->getTables())) {
             throw new TableNotFoundException($set);
         }
+=======
+    *   Get info of the tables columns e.g.(type, default value, nullable etc)
+    *
+    * @param string $set        Table name.
+    *
+    * @return array $columns    The array of the columns info.
+    */
+    public function getColumnsInfo(string $set) {
+        // If the request table is not found stop the execution.
+        if(!in_array($set, $this->getTables()))
+            throw new \Exception('Table does not exist.');
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
         
         $query = 'SHOW COLUMNS FROM '.$set;
         // Prepare statement and execute it.
@@ -90,12 +126,20 @@ class DatabaseSets
     /**
      * Get column names whose values can not be NULL and are not auto completed.
      *
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
      * @param string $set Table name.
      *
      * @return array $required  The array of the required column names.
      */
     public function getRequiredColumns(string $set)
     {
+=======
+     * @param string $set       Table name.
+     *
+     * @return array $required  The array of the required column names.
+     */
+    public function getRequiredColumns(string $set) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
         $autos = $this->getAutoCompletedNames($set);
 
         // Retrieve the database name.
@@ -113,9 +157,14 @@ class DatabaseSets
         $results            = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // If no results were returned, return empty array.
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
         if (empty($results)) {
             return array();
         }
+=======
+        if (empty($results))
+            return array();
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
 
         /**
         * Subtract columns that have auto completed values,
@@ -128,12 +177,20 @@ class DatabaseSets
     /**
      * Get table columns that have autocompleted values (auto_increment, current_timestamp)
      *
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
      * @param string $set Table name.
      *
      * @return array $auto  An array that contains the column names that have autocompleted values.
      */
     public function getAutoCompleted(string $set)
     {
+=======
+     * @param string $set   Table name.
+     *
+     * @return array $auto  An array that contains the column names that have autocompleted values.
+     */
+    public function getAutoCompleted(string $set) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
             $columns = $this->getColumnsInfo($set);
 
             /**
@@ -146,6 +203,7 @@ class DatabaseSets
             * Append to the array the columns that have
             * auto incremented values.
             */
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
         foreach ($columns as $column) {
             if ($column['Extra'] === 'auto_increment') {
                 $auto[] = [
@@ -154,11 +212,22 @@ class DatabaseSets
                 ];
             }
         }
+=======
+            foreach ($columns as $column) {
+                if ($column['Extra'] === 'auto_increment') {
+                    $auto[] = [
+                        'name' => $column['Field'],
+                        'type' => 'auto_increment'
+                    ];
+                }
+            }
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
 
             return $auto;
     }
 
     /**
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
      * Get an array containing only the names of the columns
      * that have auto completed values
      *
@@ -168,6 +237,16 @@ class DatabaseSets
      */
     public function getAutoCompletedNames(string $set)
     {
+=======
+    * Get an array containing only the names of the columns
+    * that have auto completed values
+    *
+    * @param string $set            The table name.
+    *
+    * @return array $autoCompleted  The array containing the auto completed columns.
+    */
+    public function getAutoCompletedNames(string $set) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
         $autos = $this->getAutoCompleted($set);
         $autoCompleted = array();
         
@@ -185,12 +264,20 @@ class DatabaseSets
     /**
      * Get table columns that have default values.
      *
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
      * @param string $set Table name.
      *
      * @return array $defaults  An array that contains the column names that have default values.
      */
     public function getColumnsWithDefaultValues(string $set)
     {
+=======
+     * @param string $set       Table name.
+     *
+     * @return array $defaults  An array that contains the column names that have default values.
+     */
+    public function getColumnsWithDefaultValues(string $set) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
         $defaults = array();
         $columns = $this->getColumnsInfo($set);
 
@@ -199,7 +286,11 @@ class DatabaseSets
         * default values.
         */
         foreach ($columns as $column) {
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
             if ($column['Default'] != null) {
+=======
+            if ($column['Default'] != NULL) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
                 $defaults[] = [
                     'name' => $column['Field'],
                     'type' => $column['Default']
@@ -211,6 +302,7 @@ class DatabaseSets
     }
 
     /**
+<<<<<<< HEAD:EasySQL/Src/Sets/DatabaseSets.php
      * Get an array containing only the names of the columns
      * that have default values
      *
@@ -220,6 +312,16 @@ class DatabaseSets
      */
     public function getDefaultNames(string $set)
     {
+=======
+    * Get an array containing only the names of the columns
+    * that have default values
+    *
+    * @param string $set            The table name.
+    *
+    * @return array $defaultNames   The array containing the columns that have default values.
+    */
+    public function getDefaultNames(string $set) {
+>>>>>>> f1d508c7fe88400367650b9c0be5ef42d7bd4b13:EasySQL/Src/Sets/DatabaseSets.php
         $defaults = $this->getColumnsWithDefaultValues($set);
         $defaultNames = array();
         
