@@ -180,8 +180,8 @@ That contains these values
 We can perform a join as such
 
 ```
-(new API())->get('users', 'info', 'id', 'user_id')->execute();
-(new API())->get('users', 'info', 'id', 'user_id')->return('username', 'info.address')->execute();
+(new API())->get('users')->join('info', 'id', 'user_id')->execute();
+(new API())->get('users')->join('info', 'id', 'user_id')->return('username', 'info.address')->execute();
 ```
 
-The call parameters are (new API())->get(table, join, onTable, onJoin)->execute();
+The call parameters are (new API())->get(table)->join(joinTable, leftColumn, rightColumn)->execute();
