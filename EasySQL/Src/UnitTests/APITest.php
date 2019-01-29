@@ -5,6 +5,9 @@ namespace EasySQL\Src\UnitTests;
 use \PHPUnit\Framework\TestCase;
 
 use EasySQL\Src\API\API;
+use EasySQL\Src\Sets\Exceptions\TableNotFoundException;
+use EasySQL\Src\Parameters\Exceptions\FieldNotFoundException;
+use EasySQL\Src\Parameters\Exceptions\MissingRequiredFieldsException;
 
 final class APITest extends TestCase
 {
@@ -43,11 +46,26 @@ final class APITest extends TestCase
                           UNIQUE KEY `mail` (`mail`)
                         ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;"
         );
+        
+        $this->db->query(
+            "CREATE TABLE `test_info` (
+                          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                          `user_id` int(10) unsigned NOT NULL,
+                          `address` varchar(50) NOT NULL,
+                          PRIMARY KEY (`id`),
+                          FOREIGN KEY (`user_id`) REFERENCES test_users (`id`)
+                        ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;"
+        );
 
         $this->db->query(
             "INSERT INTO `test_users` VALUES (1,'root','root@mysite.com','secret',1,'admin',
             '2018-05-21 21:00:00','2018-05-22 15:55:42'),(2,'dani','dani@example.com','terces',0,'user',
             '2018-05-21 21:00:00','2018-05-22 15:56:03');
+            "
+        );
+        
+        $this->db->query(
+            "INSERT INTO `test_info` VALUES (1, 1, 'Address 7');
             "
         );
 
@@ -56,7 +74,9 @@ final class APITest extends TestCase
 
     public function tearDown()
     {
+        $this->db->query("DROP TABLE `test_info`");
         $this->db->query("DROP TABLE `test_users`");
+        
         $this->db = null;
     }
 
@@ -71,12 +91,12 @@ final class APITest extends TestCase
 
     public function testAPICallThrowsExceptionWhenWrongDataSetIsPassed()
     {        
-        $this->expectOutputString('Table invalid was not found.');
+        $this->expectException(TableNotFoundException::class);
         
         (new API($this->db))->get('invalid')->where(['id' => 1]);
     }
     
-    public function testReturnFalseWhenWrongActionIsPassed()
+    public function testReturnFalseWhenWrongAction()
     {
         $this->expectException(\Error::class);
         
@@ -84,7 +104,7 @@ final class APITest extends TestCase
     }
 
     
-    public function testAPICallThrowsExceptionWhenParametersPassedIsNotAnArray()
+    public function testAPIGetCallThrowsExceptionWhenParametersPassedIsNotAnArray()
     {
         $this->expectException(\TypeError::class);
         
@@ -92,9 +112,9 @@ final class APITest extends TestCase
     }
 
     
-    public function testAPICallThrowsExceptionWhenParametersPassedAreInvalid()
+    public function testAPIGetCallThrowsExceptionWhenParametersPassedAreInvalid()
     {
-        $this->expectOutputString('Field pet was not found.');
+        $this->expectException(FieldNotFoundException::class);
         
         (new API($this->db))->get('test_users')->where(['pet' => 'dog']);
     }
@@ -134,7 +154,7 @@ final class APITest extends TestCase
     
     public function testAPIGetCallThrowsExceptionWhenFieldToReturnDoesNotExist()
     {
-        $this->expectOutputString('Field bogus was not found.');
+        $this->expectException(FieldNotFoundException::class);
 
         (new API($this->db))->get('test_users')->return('bogus');
     }
@@ -151,6 +171,29 @@ final class APITest extends TestCase
         );
 
         $this->assertEquals($data, $expected);
+    }
+    
+    public function testAPIGetJoinCallReturnsRowsSuccessfully()
+    {
+        $data = (new API($this->db))->get('test_users')->join('test_info', 'id', 'user_id')->execute();
+    
+        $expected = [
+            [
+                'id' => 1,
+                'username' => 'root',
+                'mail' => 'root@mysite.com',
+                'password' => 'secret',
+                'is_active' => 1,
+                'role' => 'admin',
+                'created_at' => '2018-05-21 21:00:00',
+                'updated_at' => '2018-05-22 15:55:42',
+                'id' => 1,
+                'user_id' => 1,
+                'address' => 'Address 7'
+            ]
+        ];
+        
+        $this->assertEquals($expected, $data);
     }
     
     public function testAPIGetCallReturnMultipleFieldsSuccessfully()
@@ -176,14 +219,14 @@ final class APITest extends TestCase
     
     public function testAPIUpdateCallThrowsExceptionWhenRowToUpdateDoesNotExist()
     {
-        $this->expectOutputString('Field bogus was not found.');
+        $this->expectException(FieldNotFoundException::class);
 
         (new API($this->db))->update('test_users')->set('bogus', 'test');
     }
     
     public function testAPIUpdateCallThrowsExceptionWhenUpdateDuplicatedValueOnUniqueColumn()
     {
-        $this->expectOutputString('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry \'root\' for key \'username\'');
+        $this->expectException(\PDOException::class);
 
         (new API($this->db))->update('test_users')->set('username', 'root')->where(['id' => 2])->execute();
     }
@@ -199,7 +242,7 @@ final class APITest extends TestCase
     
     public function testAPIDeleteCallSuccess()
     {
-        $data = (new API($this->db))->delete('test_users')->where(['id' => 1])->execute();
+        $data = (new API($this->db))->delete('test_info')->where(['id' => 1])->execute();
 
         $expected = [];
 
@@ -216,7 +259,7 @@ final class APITest extends TestCase
             'role' => 'user'
         );
 
-        $this->expectOutputString('Missing Required Fields (username)');
+        $this->expectException(MissingRequiredFieldsException::class);
 
         (new API($this->db))->insert('test_users')->values($params);
     }
@@ -231,7 +274,7 @@ final class APITest extends TestCase
             'role' => 'user'
         );
 
-        $this->expectOutputString('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry \'root\' for key \'username\'');
+        $this->expectException(\PDOException::class);
 
         (new API($this->db))->insert('test_users')->values($params)->execute();
     }

@@ -2,8 +2,6 @@
 
 namespace EasySQL\Src\Query;
 
-use EasySQL\Src\Parameters\Exceptions\FieldNotFoundException;
-
 class UpdateQuery extends ClausableQuery
 {
     
@@ -28,18 +26,12 @@ class UpdateQuery extends ClausableQuery
      */
     public function set(string $to_update, $updated)
     {
-        try
-        {
-            $this->parameters->checkFieldExists($to_update, $this->table);
+        $this->parameters->checkFieldExists($to_update, $this->table);
         
-            $this->query .= 'SET '.$to_update.' = ?';
+        $this->query .= 'SET '.$to_update.' = ?';
         
-            $this->params['updated'] = $updated;
+        $this->params['updated'] = $updated;
         
-            return $this;
-        } catch (FieldNotFoundException $e) {
-            print($e->getMessage());
-            return;
-        }
+       return $this;
     }
 }

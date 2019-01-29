@@ -12,6 +12,7 @@ use EasySQL\Src\Clause\WhereClause;
 use EasySQL\Src\Query\InsertQuery;
 use EasySQL\Src\Parameters\InsertParameters;
 use EasySQL\Src\Clause\OptionsClause;
+use EasySQL\Src\Clause\GroupClause;
 
 class API
 {
@@ -35,7 +36,7 @@ class API
 
     public function get(string $table, string $join = null, string $onTable = null, string $onJoined = null)
     {
-        return new GetQuery($this->dao, new WhereParameters($this->sets), new WhereClause($table, $this->sets), new OptionsClause($this->sets), $table, $join, $onTable, $onJoined);
+        return new GetQuery($this->dao, new WhereParameters($this->sets), new WhereClause($table, $this->sets), new OptionsClause($this->sets), $table, new GroupClause($table, $this->sets));
     }
     
     public function update(string $table)

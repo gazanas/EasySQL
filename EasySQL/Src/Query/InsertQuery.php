@@ -118,18 +118,12 @@ class InsertQuery
      */
     public function values(array $params)
     {
-        try {
-        
-            $this->query = 'INSERT INTO '.$this->table.'('.$this->prepareFieldsOfQuery($this->table, $params).') VALUES(';
-            $this->query = $this->insertQuery($this->query, $this->table, $this->setNotPassedParameters($this->table, $params));
+        $this->query = 'INSERT INTO '.$this->table.'('.$this->prepareFieldsOfQuery($this->table, $params).') VALUES(';
+        $this->query = $this->insertQuery($this->query, $this->table, $this->setNotPassedParameters($this->table, $params));
                   
-            $this->params = $this->parameters->prepareParameters($this->table, $params);
+        $this->params = $this->parameters->prepareParameters($this->table, $params);
             
-            return $this;
-        } catch(\Exception $e) {
-            print($e->getMessage());
-            return;
-        }
+        return $this;
     }
 
     /**
@@ -154,11 +148,6 @@ class InsertQuery
     
     public function execute()
     {
-        try {
-            return $this->dao->executeQuery($this->query, array_values($this->params));
-        } catch(\Exception $e) {
-            print($e->getMessage());
-            return;
-        }
+        return $this->dao->executeQuery($this->query, array_values($this->params));
     }
 }

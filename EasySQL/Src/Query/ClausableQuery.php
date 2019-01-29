@@ -15,6 +15,8 @@ abstract class ClausableQuery
     
     private $options;
     
+    protected $group;
+    
     protected $parameters;
     
     protected $query;
@@ -23,25 +25,26 @@ abstract class ClausableQuery
     
     private $whereClause;
     
+    protected $groupClause;
+    
     protected $table;
     
     protected $params;
     
-    public function __construct(DAO $dao, Parameters $parameters, ClauseInterface $where, ClauseInterface $options, string $table, string $join = null, string $onTable = null, string $onJoined = null)
+    public function __construct(DAO $dao, Parameters $parameters, ClauseInterface $where, ClauseInterface $options, string $table, ClauseInterface $group = null)
     {
         $this->dao = $dao;
         $this->parameters = $parameters;
         $this->where = $where;
         $this->options = $options;
+        $this->group = $group;
         $this->table = $table;
         $this->params = [];
         $this->optionsClause = '';
         $this->whereClause = '';
+        $this->groupClause = '';
         
-        if(isset($join, $onTable, $onJoined))
-            $this->__init__($join, $onTable, $onJoined);
-        else
-            $this->__init__();
+        $this->__init__();
     }
     
     /**
@@ -53,18 +56,13 @@ abstract class ClausableQuery
      */
     public function where(array $params)
     {   
-        try {
-            $this->params = array_merge($this->params, $params);
+        $this->params = array_merge($this->params, $params);
         
-            $this->whereClause = $this->where->prepareClause($params);
+        $this->whereClause = $this->where->prepareClause($params);
      
-            $this->params = $this->parameters->prepareParameters($this->table, $this->params);
+        $this->params = $this->parameters->prepareParameters($this->table, $this->params);
         
-            return $this;
-        } catch (\Exception $e) {
-            print($e->getMessage());
-            return;
-        }
+        return $this;
    }
     
     /**
@@ -75,16 +73,10 @@ abstract class ClausableQuery
      * @return ClausableQuery
      */
     public function options(array $options)
-    {
-        try {
-            
-            $this->optionsClause = $this->options->prepareClause($options);
+    {            
+        $this->optionsClause = $this->options->prepareClause($options);
         
-            return $this;
-        } catch (\Exception $e) {
-            print($e->getMessage());
-            return;
-        }
+        return $this;
     }
     
     /**
@@ -94,12 +86,7 @@ abstract class ClausableQuery
      */
     public function execute()
     {
-        try {
-            $this->query .= $this->whereClause.$this->optionsClause;
-            return $this->dao->executeQuery($this->query, array_values($this->params));
-        } catch (\Exception $e) {
-            print($e->getMessage());
-            return;
-        }
+        $this->query .= $this->whereClause.$this->groupClause.$this->optionsClause;
+        return $this->dao->executeQuery($this->query, array_values($this->params));
     }
 }
