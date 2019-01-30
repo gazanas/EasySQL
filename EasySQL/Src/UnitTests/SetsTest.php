@@ -17,8 +17,7 @@ final class SetsTest extends TestCase
         self::$database = new Connection();
 
         self::$database->createDatabase();
-
-    }    
+    }
 
     public function setUp()
     {
@@ -51,7 +50,6 @@ final class SetsTest extends TestCase
             '2018-05-21 21:00:00','2018-05-22 15:56:03');
             "
         );
-
     }
 
 
@@ -67,7 +65,6 @@ final class SetsTest extends TestCase
         self::$database->dropDatabase();
 
         self::$database = null;
-
     }
 
     public function testGetTablesReturnsArrayContainingTableNames()

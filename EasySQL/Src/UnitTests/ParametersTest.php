@@ -21,8 +21,7 @@ final class ParametersTest extends TestCase
     {
         self::$database = new Connection();
         self::$database->createDatabase();
-
-    }    
+    }
 
     public function setUp()
     {
@@ -57,7 +56,6 @@ final class ParametersTest extends TestCase
         );
 
         $this->sets = new Sets($this->db);
-
     }
 
 
@@ -73,12 +71,12 @@ final class ParametersTest extends TestCase
         self::$database->dropDatabase();
 
         self::$database = null;
-
     }
 
     public function testPrepareGetParametersByValidParametersArrayPassedByTheUser()
     {
-        $prepared = (new WhereParameters($this->sets))->prepareParameters('test_users', array('id' => 1, 'username' => 'root'));
+        $prepared = (new WhereParameters($this->sets))
+                            ->prepareParameters('test_users', array('id' => 1, 'username' => 'root'));
 
         $expected = array(
             1,
@@ -93,7 +91,6 @@ final class ParametersTest extends TestCase
         $this->expectException(\TypeError::class);
 
         (new WhereParameters($this->sets))->prepareParameters('test_users', 'root');
-
     }
     
     public function testPrepareGetParametersReturnEmptyArrayIfEmptyParametersArrayPassed()
@@ -111,8 +108,7 @@ final class ParametersTest extends TestCase
 
         $expected = array(1);
 
-        $this->assertSame($expected, $prepared);        
-
+        $this->assertSame($expected, $prepared);
     }
 
     public function testPreapreParametersForInsertAction()

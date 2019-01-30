@@ -27,16 +27,17 @@ class DAO
      *
      * @return array|string         The array of the data resulted from the query or a string
      *                               of successfull execution of the query.
-     * 
-     * @throws \PDOException       
+     *
+     * @throws \PDOException
      */
     public function executeQuery(string $query, array $params)
-    {   
+    {
         // Prepare statement and execute it.
         $stmt = $this->db->prepare($query);
         
-        for($i = 0; $i < count($params); $i++)
+        for ($i = 0; $i < count($params); $i++) {
             $stmt->bindParam($i+1, $params[$i]);
+        }
 
         $stmt->execute();
 

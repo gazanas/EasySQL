@@ -30,7 +30,7 @@ class WhereClause implements ClauseInterface
      * connected with an AND expression.
      *
      * @param array $params The parameters array passed by the user.
-     * 
+     *
      * @return string|null      The where clause of the SQL query.
      */
     public function prepareClause(array $params)
@@ -48,11 +48,7 @@ class WhereClause implements ClauseInterface
 
         // Traverse the parameter array and set up the where clause for each one.
         $i = 0;
-        if (isset($params['condition']) === true) {
-            $size = (count($params) - 2);
-        } else {
-            $size = (count($params) - 1);
-        }
+        $size = (isset($params['condition'])) ? (count($params) - 2) : (count($params) - 1);
         
         foreach (array_keys($params) as $key) {
             $query = $this->setUpWhereClause($query, $i, $size, $params, $key);
@@ -79,25 +75,24 @@ class WhereClause implements ClauseInterface
         $condition = $this->setUpCondition($params, $i);
 
         if (is_array($params[$key]) === true && is_numeric($key) === true) {
-            foreach($params[$key] as $field => $param) {
+            foreach ($params[$key] as $field => $param) {
                 if ($field === 'operator') {
-                    if(!in_array($param, $this->sets->getOperatorSet(), true)) {
+                    if (!in_array($param, $this->sets->getOperatorSet(), true)) {
                         throw new InvalidOperatorException($param);
                     }
                     $op = $param;
                     continue;
-                } else if (!isset($op)) {
+                } elseif (!isset($op)) {
                     $op = '=';
                 }
 
-                $query .= $this->whereQuery($i, $size, $field, $op, $condition);
-            }
-        } else {
-            if ($params[$key] && $key !== 'condition') {
-                $query .= $this->whereQuery($i, $size, $key, '=', $condition);
+                return $query . $this->whereQuery($i, $size, $field, $op, $condition);
             }
         }
-        return $query;
+        
+        if ($params[$key] && $key !== 'condition') {
+            return $query . $this->whereQuery($i, $size, $key, '=', $condition);
+        }
     }
 
     /**
@@ -124,25 +119,23 @@ class WhereClause implements ClauseInterface
      * @param array   $params The parameters array passed by the user.
      * @param integer $i      A counter of the iterations of the parameters array.
      *
-     * @return string $condition    The condition that connects two statements e.g. (AND, OR).
+     * @return string           The condition that connects two statements e.g. (AND, OR).
      */
     private function setUpCondition($params, int $i)
     {
         if (empty($params['condition'][$i]) === false) {
             $this->checkCondition($params['condition'][$i]);
-            $condition = $params['condition'][$i];
-        } else {
-            $condition = 'AND';
+            return $params['condition'][$i];
         }
 
-        return $condition;
+        return 'AND';
     }
 
     private function checkCondition($condition)
     {
-        if(!is_string($condition)) {
+        if (!is_string($condition)) {
             throw new InvalidConditionException(gettype($condition));
-        } else if(!in_array($condition, $this->sets->getConditionSet(), true)) {
+        } elseif (!in_array($condition, $this->sets->getConditionSet(), true)) {
             throw new InvalidConditionException($condition);
         }
     }

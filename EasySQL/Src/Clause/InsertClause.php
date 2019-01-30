@@ -6,7 +6,7 @@ class InsertClause implements ClauseInterface
 {
     
     protected $autoColumns;
-
+    
     /**
      * Initializes the insert clause object.
      *
@@ -14,30 +14,26 @@ class InsertClause implements ClauseInterface
      */
     public function __construct($autoColumns)
     {
-          $this->autoColumns = $autoColumns;
+        $this->autoColumns = $autoColumns;
     }
-
+    
     /**
      * Returns the prepared insert clause for the query.
      *
-     * @param array $params The parameters array passed by the user. 
+     * @param array $params The parameters array passed by the user.
      *
      * @return string $preparedClause    The prepared insert clause.
      */
     public function prepareClause($params)
     {
         $query = '';
-
+        
         foreach ($params as $parameter) {
-            if ($parameter === null) {
-                $query .= 'NULL,';
-            } else {
-                $query .= '?,';
-            }
+            $query .= (!isset($parameter)) ? 'NULL,' : '?,';
         }
-
+        
         $query = preg_replace('/\,$/', ')', $query);
-
+        
         return $query;
     }
 }

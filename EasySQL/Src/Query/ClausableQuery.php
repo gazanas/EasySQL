@@ -4,6 +4,7 @@ namespace EasySQL\Src\Query;
 
 use EasySQL\Src\Data\DAO;
 use EasySQL\Src\Parameters\Parameters;
+use EasySQL\Src\Sets\Sets;
 use EasySQL\Src\Clause\ClauseInterface;
 
 abstract class ClausableQuery
@@ -31,8 +32,17 @@ abstract class ClausableQuery
     
     protected $params;
     
-    public function __construct(DAO $dao, Parameters $parameters, ClauseInterface $where, ClauseInterface $options, string $table, ClauseInterface $group = null)
-    {
+    protected $sets;
+    
+    public function __construct(
+        DAO $dao,
+        Parameters $parameters,
+        ClauseInterface $where,
+        ClauseInterface $options,
+        string $table,
+        Sets $sets,
+        ClauseInterface $group = null
+    ) {
         $this->dao = $dao;
         $this->parameters = $parameters;
         $this->where = $where;
@@ -43,19 +53,22 @@ abstract class ClausableQuery
         $this->optionsClause = '';
         $this->whereClause = '';
         $this->groupClause = '';
+        $this->sets = $sets;
         
-        $this->__init__();
+        $this->sets->getColumnsInfo($table);
+        
+        $this->init();
     }
     
     /**
      * Set up the where clause of the query.
-     * 
+     *
      * @param array $params
-     * 
+     *
      * @return ClausableQuery
      */
     public function where(array $params)
-    {   
+    {
         $this->params = array_merge($this->params, $params);
         
         $this->whereClause = $this->where->prepareClause($params);
@@ -63,17 +76,17 @@ abstract class ClausableQuery
         $this->params = $this->parameters->prepareParameters($this->table, $this->params);
         
         return $this;
-   }
+    }
     
     /**
      * Set up the options clause of the query
-     * 
+     *
      * @param array $options
-     * 
+     *
      * @return ClausableQuery
      */
     public function options(array $options)
-    {            
+    {
         $this->optionsClause = $this->options->prepareClause($options);
         
         return $this;
@@ -81,7 +94,7 @@ abstract class ClausableQuery
     
     /**
      * Execute the SQL query.
-     * 
+     *
      * @return array|string
      */
     public function execute()

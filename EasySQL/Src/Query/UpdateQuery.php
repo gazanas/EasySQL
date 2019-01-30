@@ -8,7 +8,7 @@ class UpdateQuery extends ClausableQuery
     /**
      * Initialize the query.
      */
-    public function __init__()
+    public function init()
     {
         
         $this->query = 'UPDATE '.$this->table.' ';
@@ -18,20 +18,20 @@ class UpdateQuery extends ClausableQuery
     
     /**
      * Set the field to be updated and the updated value
-     * 
-     * @param string  $to_update
+     *
+     * @param string $to_update
      * @param mixed  $updated
-     * 
+     *
      * @return UpdateQuery
      */
-    public function set(string $to_update, $updated)
+    public function set(string $toUpdate, $updated)
     {
-        $this->parameters->checkFieldExists($to_update, $this->table);
+        $this->parameters->checkFieldExists($toUpdate, $this->table);
         
-        $this->query .= 'SET '.$to_update.' = ?';
+        $this->query .= 'SET '.$toUpdate.' = ?';
         
         $this->params['updated'] = $updated;
         
-       return $this;
+        return $this;
     }
 }

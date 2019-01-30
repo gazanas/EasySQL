@@ -19,8 +19,8 @@ class Connection
     public function __construct()
     {
         try {
-            $config = $this->getDatabaseConfig(); 
-            if(!isset($config[5])) {
+            $config = $this->getDatabaseConfig();
+            if (!isset($config[5])) {
                 $config[5] = null;
             }
             // Connect to database or throw error message.

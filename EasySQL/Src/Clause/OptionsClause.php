@@ -18,7 +18,7 @@ class OptionsClause implements ClauseInterface
     /**
      * Setup the options of the query
      *
-     * @param array  $params The parameters array passed by the user.
+     * @param array $params The parameters array passed by the user.
      *
      * @return string $options   The query including the options e.g. (LIMIT, ORDER BY).
      *
@@ -47,7 +47,7 @@ class OptionsClause implements ClauseInterface
     private function checkOptions(array $params)
     {
         foreach (array_keys($params) as $option) {
-            if(in_array($option, $this->sets->getOptionSet(), true) === false) {
+            if (in_array($option, $this->sets->getOptionSet(), true) === false) {
                 throw new InvalidOptionException('Option '.$option.' is not correct');
             }
         }
@@ -65,8 +65,8 @@ class OptionsClause implements ClauseInterface
      */
     private function checkOrder(array $params)
     {
-        if(isset($params['order'])) {
-            if(!is_string($params['order'])) {
+        if (isset($params['order'])) {
+            if (!is_string($params['order'])) {
                 throw new InvalidOptionException('Cannot order by '.gettype($params['order']));
             }
         }
@@ -81,8 +81,8 @@ class OptionsClause implements ClauseInterface
      */
     private function checkLimit(array $params)
     {
-        if(isset($params['limit'])) {
-            if(!is_integer($params['limit'])) {
+        if (isset($params['limit'])) {
+            if (!is_integer($params['limit'])) {
                 throw new InvalidOptionException('Cannot limit by '.gettype($params['limit']));
             }
         }

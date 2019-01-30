@@ -38,10 +38,10 @@ class WhereParameters extends Parameters
         
         foreach ($params as $field => $param) {
             if (is_array($param)) {
-                if(count($param) > 2) {
+                if (count($param) > 2) {
                     throw new InvalidParameterException(var_export($param, true));
-                } else if(count($param) == 2) {
-                    if(array_key_exists('operator', $param)) {
+                } elseif (count($param) == 2) {
+                    if (array_key_exists('operator', $param)) {
                         unset($param['operator']);
                     } else {
                         throw new InvalidParameterException(var_export($param, true));
@@ -50,11 +50,11 @@ class WhereParameters extends Parameters
                 
                 $this->checkFieldExists(key($param), $table);
                 $param = array_values($param)[0];
-            } else if($field != 'updated'){
+            } elseif ($field != 'updated') {
                 $this->checkFieldExists($field, $table);
             }
             
-            if(!is_string($param) && !is_numeric($param)) {
+            if (!is_string($param) && !is_numeric($param)) {
                 throw new InvalidParameterException(var_export($param, true));
             }
             

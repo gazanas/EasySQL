@@ -9,8 +9,8 @@ class InsertParameters extends Parameters
     /**
      * Prepares the parametres to be passed pdo's bindParam
      *
-     * @param string $table          The name of the table.
-     * @param array $params          The parameters array passed by the user.
+     * @param string $table  The name of the table.
+     * @param array  $params The parameters array passed by the user.
      *
      * @return array $bindRarams     The prepared parameters for execution.
      */
@@ -27,7 +27,7 @@ class InsertParameters extends Parameters
      * Extracts all the parameters from the api call
      *
      * @param $params        Parameters array passed by the user.
-     * @param $table         
+     * @param $table
      *
      * @return array         The extracted parameters array.
      */
@@ -55,14 +55,14 @@ class InsertParameters extends Parameters
         $missing = '';
         $flag = false;
 
-        foreach(array_keys($required) as $field) {
+        foreach (array_keys($required) as $field) {
             if (array_key_exists($field, $params) === false) {
                 $missing .= $field.',';
                 $flag = true;
             }
         }
 
-        if($flag) {
+        if ($flag) {
             throw new MissingRequiredFieldsException($missing);
         }
     }

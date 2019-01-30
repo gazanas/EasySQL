@@ -48,11 +48,11 @@ class DatabaseSets
      */
     public function getColumns(string $set)
     {
-        $column_info = $this->getColumnsInfo($set);
+        $columnInfo = $this->getColumnsInfo($set);
         $columns = array();
 
         //From the columns info save only the column name
-        foreach($column_info as $info) {
+        foreach ($columnInfo as $info) {
             $columns[] = $info['Field'];
         }
         
@@ -69,7 +69,7 @@ class DatabaseSets
     public function getColumnsInfo(string $set)
     {
         // If the request table is not found stop the execution.
-        if(!in_array($set, $this->getTables())) {
+        if (!in_array($set, $this->getTables())) {
             throw new TableNotFoundException($set);
         }
         
@@ -102,7 +102,8 @@ class DatabaseSets
         $database = $this->db->query('select database()')->fetchColumn();
         
         // This query selects all the columns from the table that have not nullable values.
-        $query      = 'SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=\''.$database.'\' AND table_name=\''.$set.'\' AND IS_NULLABLE=\'NO\'';
+        $query      = 'SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE 
+                        TABLE_SCHEMA=\''.$database.'\' AND table_name=\''.$set.'\' AND IS_NULLABLE=\'NO\'';
         // Prepare statement and execute it.
         $stmt     = $this->db->prepare($query);
         $stmt->execute();
@@ -172,7 +173,7 @@ class DatabaseSets
         $autoCompleted = array();
         
         /**
-        * From the auto completed columns array save only the 
+        * From the auto completed columns array save only the
         * names of the columns into an array.
         */
         foreach ($autos as $auto) {
@@ -224,7 +225,7 @@ class DatabaseSets
         $defaultNames = array();
         
         /**
-        * From the auto completed columns array save only the 
+        * From the auto completed columns array save only the
         * names of the columns into an array.
         */
         foreach ($defaults as $default) {

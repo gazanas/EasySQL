@@ -5,14 +5,14 @@ namespace EasySQL\Src\Clause;
 use EasySQL\Src\Parameters\Exceptions\FieldNotFoundException;
 use EasySQL\Src\Sets\Sets;
 
-class GroupClause implements ClauseInterface 
+class GroupClause implements ClauseInterface
 {
     private $sets;
     private $table;
     
     public function __construct(string $table, Sets $sets)
     {
-        $this->sets = $sets;    
+        $this->sets = $sets;
         $this->table = $table;
     }
     
@@ -30,7 +30,7 @@ class GroupClause implements ClauseInterface
      */
     public function checkFieldExists(string $field)
     {
-        if(!in_array($field, $this->sets->getColumns($this->table), true)) {
+        if (!in_array($field, $this->sets->getColumns($this->table), true)) {
             throw new FieldNotFoundException($field);
         }
     }

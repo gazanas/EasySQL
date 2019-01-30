@@ -2,7 +2,7 @@
 
 namespace EasySQL\Src\Parameters\Exceptions;
 
-class FieldNotFoundException extends \InvalidArgumentException 
+class FieldNotFoundException extends \InvalidArgumentException
 {
     protected $message;
     

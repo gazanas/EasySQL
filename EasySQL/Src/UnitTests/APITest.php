@@ -19,8 +19,7 @@ final class APITest extends TestCase
     {
         self::$database = new Connection();
         self::$database->createDatabase();
-
-    }    
+    }
 
     public function setUp()
     {
@@ -68,7 +67,6 @@ final class APITest extends TestCase
             "INSERT INTO `test_info` VALUES (1, 1, 'Address 7');
             "
         );
-
     }
 
 
@@ -86,11 +84,10 @@ final class APITest extends TestCase
         self::$database->dropDatabase();
 
         self::$database = null;
-
     }
 
     public function testAPICallThrowsExceptionWhenWrongDataSetIsPassed()
-    {        
+    {
         $this->expectException(TableNotFoundException::class);
         
         (new API($this->db))->get('invalid')->where(['id' => 1]);
@@ -171,6 +168,13 @@ final class APITest extends TestCase
         );
 
         $this->assertEquals($data, $expected);
+    }
+    
+    public function testAPIGetJoinThrowsExceptionWhenJoinTableDoesNotExist()
+    {
+        $this->expectException(TableNotFoundException::class);
+        
+        (new API($this->db))->get('test_users')->join('bogus', 'id', 'user_id');
     }
     
     public function testAPIGetJoinCallReturnsRowsSuccessfully()

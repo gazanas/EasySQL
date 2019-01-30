@@ -23,7 +23,6 @@ class API
     /**
      * Constructs the API Object and initializes the essential objects
      * for the API.
-     *
      */
     public function __construct(\PDO $database = null)
     {
@@ -34,23 +33,45 @@ class API
         $this->dao = new DAO($db);
     }
 
-    public function get(string $table, string $join = null, string $onTable = null, string $onJoined = null)
+    public function get(string $table)
     {
-        return new GetQuery($this->dao, new WhereParameters($this->sets), new WhereClause($table, $this->sets), new OptionsClause($this->sets), $table, new GroupClause($table, $this->sets));
+        return new GetQuery(
+            $this->dao,
+            new WhereParameters($this->sets),
+            new WhereClause($table, $this->sets),
+            new OptionsClause($this->sets),
+            $table,
+            $this->sets,
+            new GroupClause($table, $this->sets)
+        );
     }
     
     public function update(string $table)
     {
-        return new UpdateQuery($this->dao, new WhereParameters($this->sets), new WhereClause($table, $this->sets), new OptionsClause($this->sets), $table);
+        return new UpdateQuery(
+            $this->dao,
+            new WhereParameters($this->sets),
+            new WhereClause($table, $this->sets),
+            new OptionsClause($this->sets),
+            $table,
+            $this->sets
+        );
     }
     
     public function delete(string $table)
     {
-        return new DeleteQuery($this->dao, new WhereParameters($this->sets), new WhereClause($table, $this->sets), new OptionsClause($this->sets), $table);
+        return new DeleteQuery(
+            $this->dao,
+            new WhereParameters($this->sets),
+            new WhereClause($table, $this->sets),
+            new OptionsClause($this->sets),
+            $table,
+            $this->sets
+        );
     }
     
     public function insert(string $table)
     {
-        return new InsertQuery($this->dao, new InsertParameters($this->sets), $this->sets, $table);  
+        return new InsertQuery($this->dao, new InsertParameters($this->sets), $this->sets, $table);
     }
 }

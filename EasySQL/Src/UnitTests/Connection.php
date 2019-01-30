@@ -25,7 +25,7 @@ class Connection
         try {
             $config = $this->getDatabaseConfig();
             // Connect to database or throw error message.
-            if(!isset($config[5])) {
+            if (!isset($config[5])) {
                 $config[5] = null;
             }
 
@@ -44,9 +44,9 @@ class Connection
     public function dropDatabase()
     {
         try {
-            $config = $this->getDatabaseConfig(); 
+            $config = $this->getDatabaseConfig();
             // Connect to database or throw error message.
-            if(!isset($config[5])) {
+            if (!isset($config[5])) {
                 $config[5] = null;
             }
             $this->db = new \PDO($config[1].':host='.$config[2], $config[3], $config[5]);
@@ -90,9 +90,9 @@ class Connection
      */
     public function getDB()
     {
-        $config = $this->getDatabaseConfig(); 
+        $config = $this->getDatabaseConfig();
 
-        if(!isset($config[5])) {
+        if (!isset($config[5])) {
             $config[5] = null;
         }
 

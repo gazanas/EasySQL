@@ -7,12 +7,12 @@ class DeleteQuery extends ClausableQuery
     
     /**
      * Initialize the query.
-     * 
+     *
      * @return DeleteQuery
      */
-    public function __init__()
+    public function init()
     {
-        $this->query = 'DELETE FROM '.$this->table; 
+        $this->query = 'DELETE FROM '.$this->table;
 
         return $this;
     }

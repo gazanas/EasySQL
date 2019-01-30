@@ -28,7 +28,7 @@ abstract class Parameters
      */
     public function checkFieldExists(string $field, string $table)
     {
-        if(!in_array($field, $this->sets->getColumns($table), true)) {
+        if (!in_array($field, $this->sets->getColumns($table), true)) {
             throw new FieldNotFoundException($field);
         }
     }
