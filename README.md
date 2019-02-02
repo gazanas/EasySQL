@@ -3,12 +3,6 @@
 EasySQL is a PHP API that allows users to perform simple SQL queries
 in a one liner code. EasySQL uses prepared statements to avoid SQL injections.
 
-EasySQL provides a UI with multiple dropdowns. Selecting values from
-these dropdowns provides the EasySQL function call for the parameters
-passed by the user. The UI is under the EasySQL/UI directory.
-This makes the execution of the SQL queries really easy.
-At this moment UI does not provide multiple values selection even though the api does.
-
 # Installation
 
 Prerequisites: SQL DBMS (mysql, sqlite etc), php, PDO module.
@@ -22,16 +16,16 @@ composer install
 
 Create a database.
 
-Then execute the build.php file
+Create a .env/database/ directory structure one level up of your document root
 
-```
- php build.php
-```
+Example:
 
-complete all the needed information and you are ready to go.
+Document root: /var/www/Application/public
 
-The .env direcotry should be outside of the document root since it contains the
-database credentials.
+Directory Structure: /var/www/Application/.env/database
+
+Inside .env/database/ create a file config.ini which will hold the database information.
+An example of db.ini can be found in .env/database/config.ini of this repository.
 
 # Usage
 
@@ -56,7 +50,7 @@ Let's say we have this table named users
 | updated_at | timestamp        | YES  |     | CURRENT_TIMESTAMP |                |
 +------------+------------------+------+-----+-------------------+----------------+
 ```
-That contains these values:
+That contains these values (never store passwords in clear text):
 ```
 +----+----------+------------------+----------+-----------+-------+---------------------+---------------------+
 | id | username | mail             | password | is_active | role  | created_at          | updated_at          |
@@ -180,8 +174,8 @@ That contains these values
 We can perform a join as such
 
 ```
-(new API())->get('users')->join('info', 'id', 'user_id')->execute();
-(new API())->get('users')->join('info', 'id', 'user_id')->return('username', 'info.address')->execute();
+(new API())->get('users', 'info', 'id', 'user_id')->execute();
+(new API())->get('users', 'info', 'id', 'user_id')->return('username', 'info.address')->execute();
 ```
 
-The call parameters are (new API())->get(table)->join(joinTable, leftColumn, rightColumn)->execute();
+The call parameters are (new API())->get(table, join, onTable, onJoin)->execute();
