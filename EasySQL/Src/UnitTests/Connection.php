@@ -70,7 +70,8 @@ class Connection
         $matches = [];
         
         $config = array();
-        $dbIni = file_get_contents(dirname(__DIR__, 3).'/.env/database/config.ini');
+        $dir = dirname(__DIR__, 3).'/.env/database/config.ini';
+        $dbIni = file_get_contents($dir);
 
         preg_match_all('/.+ =\> .+/', $dbIni, $matches);
 

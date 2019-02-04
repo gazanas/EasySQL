@@ -2,21 +2,11 @@
 
 namespace EasySQL\Src\Sets;
 
+use EasySQL\Src\Data\DAO;
 use EasySQL\Src\Sets\Exceptions\TableNotFoundException;
 
 class DatabaseSets
 {
-
-    /**
-     * Create the database sets object, with the required PDO dependency.
-     *
-     * @param \PDO $db The PDO object.
-     */
-    public function __construct($db)
-    {
-        
-        $this->db = $db;
-    }
     
     /**
      *   Returns the tables of the database
@@ -25,16 +15,19 @@ class DatabaseSets
      */
     public function getTables()
     {
+
         $query      = 'SHOW TABLES';
-        // Prepare statement and execute it.
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
+
         /**
         * Fetch only a single column from the query, if the query fetches
         * multiple columns it fetches only the first.
         */
-        $tables = $stmt->fetchAll($this->db::FETCH_COLUMN, 0);
-       
+        $tables = $this->dao->executeQuery($query, []);
+
+        foreach ($tables as $index => $table) {
+            $tables[$index] = array_values($table)[0];
+        }
+
         return $tables;
     }
 
@@ -48,14 +41,15 @@ class DatabaseSets
      */
     public function getColumns(string $set)
     {
+
         $columnInfo = $this->getColumnsInfo($set);
         $columns = array();
 
         //From the columns info save only the column name
-        foreach ($columnInfo as $info) {
-            $columns[] = $info['Field'];
+        foreach ($columnInfo as $column) {
+            $columns[] = array_values($column)[0];
         }
-        
+
         return $columns;
     }
 
@@ -74,14 +68,12 @@ class DatabaseSets
         }
         
         $query = 'SHOW COLUMNS FROM '.$set;
-        // Prepare statement and execute it.
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
+        ;
         /**
         * Fetch the results of the query in an associative array
         * which keys are column names.
         */
-        $columns = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $columns = $this->dao->executeQuery($query, []);
 
         return $columns;
     }
@@ -99,19 +91,18 @@ class DatabaseSets
         $autos = $this->getAutoCompletedNames($set);
 
         // Retrieve the database name.
-        $database = $this->db->query('select database()')->fetchColumn();
-        
+        $database = array_values($this->dao->executeQuery('select database()', [])[0])[0];
+
         // This query selects all the columns from the table that have not nullable values.
         $query      = 'SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE 
                         TABLE_SCHEMA=\''.$database.'\' AND table_name=\''.$set.'\' AND IS_NULLABLE=\'NO\'';
-        // Prepare statement and execute it.
-        $stmt     = $this->db->prepare($query);
-        $stmt->execute();
         /**
         * Fetch only a single column from the query, if the query fetches
         * multiple columns it fetches only the first.
         */
-        $results            = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+        foreach ($this->dao->executeQuery($query, []) as $column) {
+               $results[] = array_values($column)[0];
+        }
 
         // If no results were returned, return empty array.
         if (empty($results)) {

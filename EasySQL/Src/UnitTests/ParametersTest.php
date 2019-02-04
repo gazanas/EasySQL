@@ -2,6 +2,7 @@
 
 namespace EasySQL\Src\UnitTests;
 
+use EasySQL\Src\Data\PdoDAO;
 use PHPUnit\Framework\TestCase;
 
 use EasySQL\Src\Sets\Sets;
@@ -11,11 +12,11 @@ use EasySQL\Src\Parameters\InsertParameters;
 final class ParametersTest extends TestCase
 {
 
-    protected $db;
-    protected static $database;
+    private $db;
+    private static $database;
 
-    protected $sets;
-    protected $sql;
+    private $sets;
+    private $dao;
 
     public static function setUpBeforeClass()
     {
@@ -55,7 +56,8 @@ final class ParametersTest extends TestCase
             "
         );
 
-        $this->sets = new Sets($this->db);
+        $this->dao = new PdoDAO($this->db);
+        $this->sets = new Sets($this->dao);
     }
 
 

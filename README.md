@@ -31,7 +31,21 @@ An example of db.ini can be found in .env/database/config.ini of this repository
 
 The api call is a single liner as such:
 
-(new API())->action(table)->more()
+(new API('driver'))->action(table)->more()
+
+Supported drivers are PDO and mysqli
+
+So the calls might be:
+
+```
+(new API('pdo'))->action(table)->more()
+```
+
+or 
+
+```
+(new API('mysqli'))->action(table)->more()
+```
 
 # Documentation
 
@@ -73,59 +87,59 @@ Now we want to perform some action using the EasySQL API.
 - The API call to get all the values from the rows would be:
 
 ```
-(new API())->get('users')->execute();
+(new API('pdo'))->get('users')->execute();
 ```
 
 - You can limit or order the results of an API call by using:
 
 ```
-(new API())->get('users')->options(['limit' => 1])->execute();
-(new API())->get('users')->options(['order' => 'username ASC'])->execute();
+(new API('pdo'))->get('users')->options(['limit' => 1])->execute();
+(new API('pdo'))->get('users')->options(['order' => 'username ASC'])->execute();
 ```
 
 - If you want to combine these two ordering should always preceed limit:
 
 ```
-(new API())->get('users')->options(['order' => 'username ASC', 'limit' => 1])->execute();
+(new API('pdo'))->get('users')->options(['order' => 'username ASC', 'limit' => 1])->execute();
 ```
 
 - The API call to get all the values from the row with id equal to 1 is:
 
 ```
-(new API())->get('users')->where(['id' => 1])->execute();
+(new API('pdo'))->get('users')->where(['id' => 1])->execute();
 ```
 
 - The API provides support for operators such as (>, <, <>, <=, >=, LIKE).
 The API call to get all the columns that have id greater than 1 is:
 
 ```
-(new API())->get('users')->where([['operator' => '>', 'id' => 1]])->execute();
-(new API())->get('users')->where([['operator' => 'LIKE', 'username' => '%da%']])->execute();
+(new API('pdo'))->get('users')->where([['operator' => '>', 'id' => 1]])->execute();
+(new API('pdo'))->get('users')->where([['operator' => 'LIKE', 'username' => '%da%']])->execute();
 ```
 
 - The API provides support for conditions (AND, OR).
 The API call to get the columns that have id 1 or 2 is:
 
 ```
-(new API())->get('users')->where(['id' => 1, ['id' => 2], 'condition' => ['OR']])->execute();
+(new API('pdo'))->get('users')->where(['id' => 1, ['id' => 2], 'condition' => ['OR']])->execute();
 ```
 
 - The API call to get a certain value (in this case username) from the rows is:
 
 ```
-(new API())->get('users')->return('username')->execute();
+(new API('pdo'))->get('users')->return('username')->execute();
 ```
 
 or if you want to return multiple values:
 
 ```
-(new API())->get('users')->return('username', 'mail')->execute();
+(new API('pdo'))->get('users')->return('username', 'mail')->execute();
 ```
 
 - The API call to update a certain row is:
 
 ```
-(new API())->update('users')->set('username', 'root')->where(['id' => 1])->execute();
+(new API('pdo'))->update('users')->set('username', 'root')->where(['id' => 1])->execute();
 ```
 
 This will change the admin username to root.
@@ -142,13 +156,13 @@ the parameters array.
 The api call to insert a new row is:
 
 ```
-(new API())->insert('users')->values(['username' => 'george', 'mail' => 'george@example.com', 'password' => 'secret', 'is_active' => 0, 'role' => 'user', 'created_at' => '2018-06-02 00:00:00'])->execute();
+(new API('pdo'))->insert('users')->values(['username' => 'george', 'mail' => 'george@example.com', 'password' => 'secret', 'is_active' => 0, 'role' => 'user', 'created_at' => '2018-06-02 00:00:00'])->execute();
 ```
 
 - The api call to delete the user dani is:
 
 ```
-(new API())->delete('users')->where(['id' => 2])->execute();
+(new API('pdo'))->delete('users')->where(['id' => 2])->execute();
 ```
 
 - You can also perform a join on two tables
@@ -174,8 +188,8 @@ That contains these values
 We can perform a join as such
 
 ```
-(new API())->get('users', 'info', 'id', 'user_id')->execute();
-(new API())->get('users', 'info', 'id', 'user_id')->return('username', 'info.address')->execute();
+(new API('pdo'))->get('users')->join('info', 'id', 'user_id')->execute();
+(new API('pdo'))->get('users')->join('info', 'id', 'user_id')->return('username', 'info.address')->execute();
 ```
 
-The call parameters are (new API())->get(table, join, onTable, onJoin)->execute();
+The call parameters are (new API('pdo'))->get(table)->join(joinTable, columnFromTable, columnFromJoin)->execute();

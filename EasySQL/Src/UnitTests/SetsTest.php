@@ -2,6 +2,7 @@
 
 namespace EasySQL\Src\UnitTests;
 
+use EasySQL\Src\Data\PdoDAO;
 use PHPUnit\Framework\TestCase;
 
 use EasySQL\Src\Sets\Sets;
@@ -9,8 +10,9 @@ use EasySQL\Src\Sets\Sets;
 final class SetsTest extends TestCase
 {
 
-    protected $db;
-    protected static $database;
+    private $db;
+    private static $database;
+    private $dao;
 
     public static function setUpBeforeClass()
     {
@@ -50,6 +52,8 @@ final class SetsTest extends TestCase
             '2018-05-21 21:00:00','2018-05-22 15:56:03');
             "
         );
+
+        $this->dao = new PdoDAO($this->db);
     }
 
 
@@ -69,7 +73,7 @@ final class SetsTest extends TestCase
 
     public function testGetTablesReturnsArrayContainingTableNames()
     {
-        $dbinfo = new Sets($this->db);
+        $dbinfo = new Sets($this->dao);
 
         $tables = $dbinfo->getTables('test');
 
@@ -82,7 +86,7 @@ final class SetsTest extends TestCase
 
     public function testGetColumnsReturnsArrayContainingTableColumnNames()
     {
-        $dbinfo = new Sets($this->db);
+        $dbinfo = new Sets($this->dao);
 
         $columns = $dbinfo->getColumns('test_users');
 
@@ -102,7 +106,7 @@ final class SetsTest extends TestCase
 
     public function testGetColumnsThrowsExceptionWhenTableDoesNotExist()
     {
-        $dbinfo = new Sets($this->db);
+        $dbinfo = new Sets($this->dao);
 
         $this->expectException(\Exception::class);
 
@@ -111,7 +115,7 @@ final class SetsTest extends TestCase
 
     public function testGetColumnInfoReturnsArrayContainingAllTheColumnsInfo()
     {
-        $dbinfo = new Sets($this->db);
+        $dbinfo = new Sets($this->dao);
 
         $columns_info = $dbinfo->getColumnsInfo('test_users');
         $expected = array (
@@ -192,7 +196,7 @@ final class SetsTest extends TestCase
 
     public function testGetColumnInfoThrowsExceptionWhenTableDoesNotExist()
     {
-        $dbinfo = new Sets($this->db);
+        $dbinfo = new Sets($this->dao);
 
         $this->expectException(\Exception::class);
 
@@ -201,7 +205,7 @@ final class SetsTest extends TestCase
 
     public function testGetRequiredColumnsThrowsExceptionlWhenTableDoesNotExist()
     {
-        $dbinfo = new Sets($this->db);
+        $dbinfo = new Sets($this->dao);
 
         $this->expectException(\Exception::class);
 
@@ -210,7 +214,7 @@ final class SetsTest extends TestCase
 
     public function testGetAutoCompletedColumnsReturnsArrayContainingTheColumnsNamesThatHaveAutoCompletedValues()
     {
-        $dbinfo = new Sets($this->db);
+        $dbinfo = new Sets($this->dao);
 
         $autos = $dbinfo->getAutoCompleted('test_users');
 

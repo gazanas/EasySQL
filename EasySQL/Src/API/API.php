@@ -3,6 +3,7 @@
 namespace EasySQL\Src\API;
 
 use EasySQL\Src\Data\DAO;
+use EasySQL\Src\Data\DAOFactory;
 use EasySQL\Src\Sets\Sets;
 use EasySQL\Src\Query\GetQuery;
 use EasySQL\Src\Query\UpdateQuery;
@@ -19,18 +20,20 @@ class API
 
     private $sets;
     private $dao;
-    
+
     /**
      * Constructs the API Object and initializes the essential objects
      * for the API.
      */
-    public function __construct(\PDO $database = null)
+    public function __construct(String $driver, \PDO $db = null)
     {
-        $db = (!isset($database)) ? (new Connection())->getDB() : $database;
+        $createConnection = 'create'.ucfirst(strtolower(($driver)));
+        $db = (isset($db)) ? $db : (new ConnectionFactory())->$createConnection();
 
-        $this->sets = new Sets($db);
-        
-        $this->dao = new DAO($db);
+        $createDAO = 'create'.ucfirst(strtolower(($driver))).'DAO';
+        $this->dao = (new DAOFactory())->$createDAO($db);
+
+        $this->sets = new Sets($this->dao);
     }
 
     public function get(string $table)

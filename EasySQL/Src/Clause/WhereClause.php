@@ -49,10 +49,14 @@ class WhereClause implements ClauseInterface
         // Traverse the parameter array and set up the where clause for each one.
         $i = 0;
         $size = (isset($params['condition'])) ? (count($params) - 2) : (count($params) - 1);
-        
+
+
+
         foreach (array_keys($params) as $key) {
-            $query = $this->setUpWhereClause($query, $i, $size, $params, $key);
-            $i++;
+            if ($key !== 'condition') {
+                $query = $this->setUpWhereClause($query, $i, $size, $params, $key);
+                $i++;
+            }
         }
 
         return $query;

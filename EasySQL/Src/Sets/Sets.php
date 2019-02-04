@@ -2,10 +2,12 @@
 
 namespace EasySQL\Src\Sets;
 
+use EasySQL\Src\Data\DAO;
+
 class Sets extends DatabaseSets
 {
 
-    protected $db;
+    protected $dao;
 
     /**
      * Parameters array ready to be passed to the prepared statement
@@ -44,10 +46,10 @@ class Sets extends DatabaseSets
      */
     public $conditions;
 
-    public function __construct($db)
+    public function __construct(DAO $dao)
     {
         
-        $this->db = $db;
+        $this->dao = $dao;
 
         $this->actionParameters = [
             'return',
