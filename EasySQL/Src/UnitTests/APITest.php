@@ -90,14 +90,14 @@ final class APITest extends TestCase
     {
         $this->expectException(TableNotFoundException::class);
 
-        (new API('pdo', $this->db))->get('invalid')->where(['id' => 1]);
+        (new API('pdo', $this->db))->get('invalid')->where('id = 1');
     }
 
     public function testReturnFalseWhenWrongAction()
     {
         $this->expectException(\Error::class);
 
-        (new API('pdo', $this->db))->invalid('invalid')->where(['id' => 1])->execute();
+        (new API('pdo', $this->db))->invalid('invalid')->where('id = 1')->execute();
     }
 
 
@@ -105,7 +105,7 @@ final class APITest extends TestCase
     {
         $this->expectException(\TypeError::class);
 
-        (new API('pdo', $this->db))->get('test_users')->where('hello');
+        (new API('pdo', $this->db))->get('test_users')->where(['hello']);
     }
 
 
@@ -113,14 +113,14 @@ final class APITest extends TestCase
     {
         $this->expectException(FieldNotFoundException::class);
 
-        (new API('pdo', $this->db))->get('test_users')->where(['pet' => 'dog']);
+        (new API('pdo', $this->db))->get('test_users')->where('pet = \'dog\'');
     }
 
 
     public function testAPIGetCallReturnsEmptyArrayWhenRowIsNotFound()
     {
 
-        $data = (new API('pdo', $this->db))->get('test_users')->where(['id' => 999])->execute();
+        $data = (new API('pdo', $this->db))->get('test_users')->where('id = 999')->execute();
 
         $expected = array();
 
@@ -130,7 +130,7 @@ final class APITest extends TestCase
 
     public function testAPIGetCallReturnsCorrectResults()
     {
-        $data = (new API('pdo', $this->db))->get('test_users')->where(['id' => 1])->execute();
+        $data = (new API('pdo', $this->db))->get('test_users')->where('id = 1')->execute();
 
         $expected = array(
             array(
@@ -159,7 +159,7 @@ final class APITest extends TestCase
 
     public function testAPIGetCallReturnOneFieldSuccessfully()
     {
-        $data = (new API('pdo', $this->db))->get('test_users')->return('username')->where(['id' => 1])->execute();
+        $data = (new API('pdo', $this->db))->get('test_users')->return('username')->where('id = 1')->execute();
 
         $expected = array(
             array(
@@ -203,7 +203,7 @@ final class APITest extends TestCase
     public function testAPIGetCallReturnMultipleFieldsSuccessfully()
     {
         $data = (new API('pdo', $this->db))->get('test_users')
-                                                    ->return('username', 'password')->where(['id' => 1])->execute();
+                                                    ->return('username', 'password')->where('id = 1')->execute();
 
         $expected = array(
             array(
@@ -219,7 +219,7 @@ final class APITest extends TestCase
     {
         $this->expectException(\ArgumentCountError::class);
 
-        (new API('pdo', $this->db))->update('test_users')->set('username')->where(['id' => 1])->execute();
+        (new API('pdo', $this->db))->update('test_users')->set('username')->where('id = 1')->execute();
     }
 
     public function testAPIUpdateCallThrowsExceptionWhenRowToUpdateDoesNotExist()
@@ -233,13 +233,13 @@ final class APITest extends TestCase
     {
         $this->expectException(\PDOException::class);
 
-        (new API('pdo', $this->db))->update('test_users')->set('username', 'root')->where(['id' => 2])->execute();
+        (new API('pdo', $this->db))->update('test_users')->set('username', 'root')->where('id = 2')->execute();
     }
 
     public function testAPIUpdateCallSuccess()
     {
         $data = (new API('pdo', $this->db))->update('test_users')
-                                                        ->set('username', 'admin')->where(['id' => 1])->execute();
+                                                        ->set('username', 'admin')->where('id = 1')->execute();
 
         $expected = [];
 
@@ -248,7 +248,7 @@ final class APITest extends TestCase
 
     public function testAPIDeleteCallSuccess()
     {
-        $data = (new API('pdo', $this->db))->delete('test_info')->where(['id' => 1])->execute();
+        $data = (new API('pdo', $this->db))->delete('test_info')->where('id = 1')->execute();
 
         $expected = [];
 

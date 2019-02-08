@@ -8,22 +8,6 @@ use EasySQL\Src\Sets\Sets;
 
 class WhereClause implements ClauseInterface
 {
-
-    private $sets;
-    private $columns;
-    private $table;
-
-    public function __construct(string $table, Sets $sets)
-    {
-        $this->table = $table;
-        $this->sets = $sets;
-    }
-
-    private function boot()
-    {
-        $this->columns = $this->sets->getColumns($this->table);
-    }
-    
     /**
      * Simple Where Clause formats an array that consists of parameters
      * in a where clause where all conditions are equalities and are
@@ -35,112 +19,14 @@ class WhereClause implements ClauseInterface
      */
     public function prepareClause(array $params)
     {
-        
-        $this->boot();
-        
-        unset($params['options']);
-        
-        if (empty($params) === true) {
-            return null;
-        }
+        $query = ' WHERE '.$params[0];
 
-        $query = ' WHERE ';
-
-        // Traverse the parameter array and set up the where clause for each one.
-        $i = 0;
-        $size = (isset($params['condition'])) ? (count($params) - 2) : (count($params) - 1);
-
-
-
-        foreach (array_keys($params) as $key) {
-            if ($key !== 'condition') {
-                $query = $this->setUpWhereClause($query, $i, $size, $params, $key);
-                $i++;
-            }
-        }
+        $query = preg_replace(
+            '/([A-Za-z0-9_]+) (\=|\<\>|\>|\<|\>\=|\<\=) (\\\'(\s*\w*\s*)+\\\'|\d+)/',
+            '$1 $2 ?',
+            $query
+        );
 
         return $query;
-    }
-
-    /**
-     * Set up the where clause of the query  for each parameter passed concatenate it with the query string
-     * and return the finished query to be executed
-     *
-     * @param string  $query  The SQL query to be executed.
-     * @param integer $i      A counter of the iterations of the parameters array.
-     * @param int     $size   The size of the parameters array passed by the user, excluding the conditions array.
-     * @param array   $params The parameters array passed by the user.
-     * @param string  $key    The key of the parameters associative array iterated value.
-     *
-     * @return $string $query   The SQL query containing the where clause.
-     */
-    private function setUpWhereClause(string $query, int $i, int $size, $params, string $key)
-    {
-        $condition = $this->setUpCondition($params, $i);
-
-        if (is_array($params[$key]) === true && is_numeric($key) === true) {
-            foreach ($params[$key] as $field => $param) {
-                if ($field === 'operator') {
-                    if (!in_array($param, $this->sets->getOperatorSet(), true)) {
-                        throw new InvalidOperatorException($param);
-                    }
-                    $op = $param;
-                    continue;
-                } elseif (!isset($op)) {
-                    $op = '=';
-                }
-
-                return $query . $this->whereQuery($i, $size, $field, $op, $condition);
-            }
-        }
-        
-        if ($params[$key] && $key !== 'condition') {
-            return $query . $this->whereQuery($i, $size, $key, '=', $condition);
-        }
-    }
-
-    /**
-     * Set up the where condition as a string to concatenate with the query
-     *
-     * @param integer $i         A counter of the iterations of the parameters array.
-     * @param integer $size      The size of the parameters array passed by the user, excluding the conditions array.
-     * @param string  $field     The field (column name) to be used in the where operation.
-     * @param string  $op        The operator for the where operation. e.g.(=, <, >)
-     * @param string  $condition The condition that connects two where operations. e.g.(AND, OR)
-     *
-     * @return $string $query     The SQL query containing the where clause.
-     */
-    private function whereQuery(int $i, int $size, string $field, string $op, string $condition)
-    {
-        return ($i < $size) ? $field.' '.$op.' ? '.$condition.' ' : $field.' '.$op.' ?';
-    }
-
-
-    /**
-     * If the condition array is passed, setup the condition between
-     * each statement of the where clause.
-     *
-     * @param array   $params The parameters array passed by the user.
-     * @param integer $i      A counter of the iterations of the parameters array.
-     *
-     * @return string           The condition that connects two statements e.g. (AND, OR).
-     */
-    private function setUpCondition($params, int $i)
-    {
-        if (empty($params['condition'][$i]) === false) {
-            $this->checkCondition($params['condition'][$i]);
-            return $params['condition'][$i];
-        }
-
-        return 'AND';
-    }
-
-    private function checkCondition($condition)
-    {
-        if (!is_string($condition)) {
-            throw new InvalidConditionException(gettype($condition));
-        } elseif (!in_array($condition, $this->sets->getConditionSet(), true)) {
-            throw new InvalidConditionException($condition);
-        }
     }
 }

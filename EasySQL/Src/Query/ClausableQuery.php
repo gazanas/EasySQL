@@ -67,12 +67,23 @@ abstract class ClausableQuery
      *
      * @return ClausableQuery
      */
-    public function where(array $params)
+    public function where(string $where)
     {
+        $params = [];
+        preg_match_all('/([A-Za-z0-9_]+) (\=|\<\>|\>|\<|\>\=|\<\=) (\\\'(\s*\w*\s*)+\\\'|\d+)/', $where, $matches);
+
+        foreach ($matches[1] as $index => $field) {
+            if (array_key_exists($field, $params)) {
+                $params[][$field] = $matches[3][$index];
+                continue;
+            }
+            $params[$field] = $matches[3][$index];
+        }
+
         $this->params = array_merge($this->params, $params);
-        
-        $this->whereClause = $this->where->prepareClause($params);
-     
+
+        $this->whereClause = $this->where->prepareClause([$where]);
+
         $this->params = $this->parameters->prepareParameters($this->table, $this->params);
         
         return $this;

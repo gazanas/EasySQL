@@ -41,7 +41,7 @@ class API
         return new GetQuery(
             $this->dao,
             new WhereParameters($this->sets),
-            new WhereClause($table, $this->sets),
+            new WhereClause(),
             new OptionsClause($this->sets),
             $table,
             $this->sets,
@@ -54,7 +54,7 @@ class API
         return new UpdateQuery(
             $this->dao,
             new WhereParameters($this->sets),
-            new WhereClause($table, $this->sets),
+            new WhereClause(),
             new OptionsClause($this->sets),
             $table,
             $this->sets
@@ -66,7 +66,7 @@ class API
         return new DeleteQuery(
             $this->dao,
             new WhereParameters($this->sets),
-            new WhereClause($table, $this->sets),
+            new WhereClause(),
             new OptionsClause($this->sets),
             $table,
             $this->sets

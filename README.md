@@ -106,22 +106,22 @@ Now we want to perform some action using the EasySQL API.
 - The API call to get all the values from the row with id equal to 1 is:
 
 ```
-(new API('pdo'))->get('users')->where(['id' => 1])->execute();
+(new API('pdo'))->get('users')->where('id = 1')->execute();
 ```
 
 - The API provides support for operators such as (>, <, <>, <=, >=, LIKE).
 The API call to get all the columns that have id greater than 1 is:
 
 ```
-(new API('pdo'))->get('users')->where([['operator' => '>', 'id' => 1]])->execute();
-(new API('pdo'))->get('users')->where([['operator' => 'LIKE', 'username' => '%da%']])->execute();
+(new API('pdo'))->get('users')->where('id > 1')->execute();
+(new API('pdo'))->get('users')->where('username LIKE \'%da%\'')->execute();
 ```
 
 - The API provides support for conditions (AND, OR).
 The API call to get the columns that have id 1 or 2 is:
 
 ```
-(new API('pdo'))->get('users')->where(['id' => 1, ['id' => 2], 'condition' => ['OR']])->execute();
+(new API('pdo'))->get('users')->where('id = 1 OR id = 2')->execute();
 ```
 
 - The API call to get a certain value (in this case username) from the rows is:
@@ -139,7 +139,7 @@ or if you want to return multiple values:
 - The API call to update a certain row is:
 
 ```
-(new API('pdo'))->update('users')->set('username', 'root')->where(['id' => 1])->execute();
+(new API('pdo'))->update('users')->set('username', 'root')->where('id = 1')->execute();
 ```
 
 This will change the admin username to root.
@@ -162,7 +162,7 @@ The api call to insert a new row is:
 - The api call to delete the user dani is:
 
 ```
-(new API('pdo'))->delete('users')->where(['id' => 2])->execute();
+(new API('pdo'))->delete('users')->where('id = 2')->execute();
 ```
 
 - You can also perform a join on two tables
