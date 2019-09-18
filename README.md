@@ -1,11 +1,11 @@
 # Read Me
 
-EasySQL is a PHP API that allows users to perform simple SQL queries
+EasySQL is a PHP SQL API/ORM that allows users to perform SQL queries
 in a one liner code. EasySQL uses prepared statements to avoid SQL injections.
 
 # Installation
 
-Prerequisites: SQL DBMS (mysql, sqlite etc), php, PDO module.
+Prerequisites: SQL DBMS (mysql, sqlite are supported), php, PDO module.
 
 To install EasySQL you need to install the modules needed from the directory
 where composer.json is, by executing:
@@ -16,38 +16,53 @@ composer install
 
 Create a database.
 
-Create a .env/database/ directory structure one level up of your document root
+Write the configuration file on .env/database/config.ini
 
-Example:
-
-Document root: /var/www/Application/public
-
-Directory Structure: /var/www/Application/.env/database
-
-Inside .env/database/ create a file config.ini which will hold the database information.
-An example of db.ini can be found in .env/database/config.ini of this repository.
-
-# Usage
-
-The api call is a single liner as such:
-
-(new API('driver'))->action(table)->more()
-
-Supported drivers are PDO and mysqli
-
-So the calls might be:
+- MySQL example config:
 
 ```
-(new API('pdo'))->action(table)->more()
+dbms = mysql
+host = localhost
+username = root
+database = easysql
+password = password
 ```
 
-or 
+- SQLite example config:
 
 ```
-(new API('mysqli'))->action(table)->more()
+dbms = sqlite
+file = easysql.sq3
+username =
+password = 
 ```
 
-# Documentation
+```
+use EasySQL\Query\DB;
+
+/**
+ * Default configuration is EasySQL/.env/database/config.ini
+ * If you want to change it then do:
+ * DB::$config = 'your_configuration_file';
+ * Also you could pass your own \PDO connection object in this case
+ * the configuration file will be ignored
+ * DB::$connection = new \PDO($dsn, $username, $password, $options);
+ */
+
+DB::table('users')->select('*')->get();
+```
+
+To run unit tests:
+
+```
+phpunit EasySQL\Src\UnitTests sqlite
+
+or
+
+phpunit EasySQL\Src\UnitTest mysql
+```
+
+# Query Builder Usage
 
 Let's say we have this table named users
 ```
@@ -75,97 +90,98 @@ That contains these values (never store passwords in clear text):
 ```
 Now we want to perform some action using the EasySQL API.
 
-## Actions
+### BASIC USAGE
 
-- Get
-- Update
-- Insert
-- Delete
-
-## Examples
-
-- The API call to get all the values from the rows would be:
+- Get all the columns of the table:
 
 ```
-(new API('pdo'))->get('users')->execute();
+DB::table('users')->select('*')->get();
 ```
 
-- You can limit or order the results of an API call by using:
+- Get certain columns of the table:
 
 ```
-(new API('pdo'))->get('users')->options(['limit' => 1])->execute();
-(new API('pdo'))->get('users')->options(['order' => 'username ASC'])->execute();
+DB::table('users')->find('username', 'role');
+DB::table('users')->select('username', 'role')->get();
 ```
 
-- If you want to combine these two ordering should always preceed limit:
+- Get the first row:
 
 ```
-(new API('pdo'))->get('users')->options(['order' => 'username ASC', 'limit' => 1])->execute();
+DB::table('users')->select('*')->first();
 ```
 
-- The API call to get all the values from the row with id equal to 1 is:
+- Get the last row:
 
 ```
-(new API('pdo'))->get('users')->where('id = 1')->execute();
+DB::table('users')->select('*')->last();
 ```
 
-- The API provides support for operators such as (>, <, <>, <=, >=, LIKE).
-The API call to get all the columns that have id greater than 1 is:
+- Filter the values of the rows:
 
 ```
-(new API('pdo'))->get('users')->where('id > 1')->execute();
-(new API('pdo'))->get('users')->where('username LIKE \'%da%\'')->execute();
+DB::table('users')->where('id', '=', 3)->get();
 ```
 
-- The API provides support for conditions (AND, OR).
-The API call to get the columns that have id 1 or 2 is:
-
 ```
-(new API('pdo'))->get('users')->where('id = 1 OR id = 2')->execute();
-```
+DB::table('users')->where('id', '>', 1)->and()->where('username', '=', 'dani')->get();
 
-- The API call to get a certain value (in this case username) from the rows is:
+is identical to
 
-```
-(new API('pdo'))->get('users')->return('username')->execute();
+DB::table('users')->where('id', '>', 1)->where('username', '=', 'dani')->get();
 ```
 
-or if you want to return multiple values:
-
 ```
-(new API('pdo'))->get('users')->return('username', 'mail')->execute();
+$builder->where('id', '>', 1)->or()->where('username', '=', 'admin')->get();
 ```
 
-- The API call to update a certain row is:
-
 ```
-(new API('pdo'))->update('users')->set('username', 'root')->where('id = 1')->execute();
+DB::table('users')->limit(1)->get();
 ```
 
-This will change the admin username to root.
-
-- Now to insert a new row we should see the columns we have to complete.
-
-We see that id and updated_at columns have auto completed values that
-means we can just leave them out of the parameters array.
-
-Also the created_at column is nullable that means if you don't want
-to keep a record of when the user was created you can skip this in
-the parameters array.
-
-The api call to insert a new row is:
-
 ```
-(new API('pdo'))->insert('users')->values(['username' => 'george', 'mail' => 'george@example.com', 'password' => 'secret', 'is_active' => 0, 'role' => 'user', 'created_at' => '2018-06-02 00:00:00'])->execute();
+DB::table('users')->order('username', 'ASC')->get();
 ```
 
-- The api call to delete the user dani is:
-
 ```
-(new API('pdo'))->delete('users')->where('id = 2')->execute();
+DB::table('users')->group('role')->having('id', '>', 1)->get();
 ```
 
-- You can also perform a join on two tables
+- Aggregate functions
+
+```
+DB::table('users')->max('id');
+DB::table('users')->min('id');
+DB::table('users')->sum('id');
+DB::table('users')->avg('id');
+DB::table('users')->count('id');
+```
+
+- Insert new row (will automatically set null any column that isn't passed):
+
+```
+DB::table('users')->insert(['username' => 'test_user', 'role' => 'user']);
+```
+
+```
+DB::table('users')->insert(['id' => 5, 'username' => 'test_user', 'role' => 'user']);
+```
+
+- Update row:
+
+```
+DB::table('users')->where('id', '=', 5)->update('role', 'user');
+```
+
+- Delete row:
+
+```
+DB::table('users')->where('id', '=', 5)->delete();
+```
+
+
+### ADVANCED USAGE
+
 
 Lets say we have a second table named info
 ```
@@ -185,11 +201,18 @@ That contains these values
 |  1 |       1 | Some address 134  |
 +----+---------+-------------------+
 ```
-We can perform a join as such
+
+- Perform a join query:
 
 ```
-(new API('pdo'))->get('users')->join('info', 'id', 'user_id')->execute();
-(new API('pdo'))->get('users')->join('info', 'id', 'user_id')->return('username', 'info.address')->execute();
+DB::table('users')->select('*')->join('info', 'users.id', 'user_id')->get();
 ```
 
-The call parameters are (new API('pdo'))->get(table)->join(joinTable, columnFromTable, columnFromJoin)->execute();
+- Check if a column value is in a set of values:
+
+```
+$subquery = DB::table('info')->select('user_id');
+DB::table('users')->select('*')->in('id', $subquery)->get()
+```
+
+ORM Documentation can be found [here](EasySQL/Src/Entities)

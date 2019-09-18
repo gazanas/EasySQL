@@ -1,15 +1,16 @@
 {
-	"name": "gazanas/easysql",
-    	"authors": [
-        	{
-            		"name": "Gaziotis Anastasios",
-            		"email": "anastasios.gaziotis@gmail.com"
-        	}
-    	],
+    "name": "gazanas/easysql",
+    "authors": [
+        {
+            "name": "Gaziotis Anastasios",
+            "email": "anastasios.gaziotis@gmail.com"
+        }
+    ],
     
 	"autoload" : {
 		"psr-4" : {
-			"EasySQL\\Src\\" : "EasySQL/Src/"
+			"EasySQL\\" : "EasySQL/Src/",
+			"UnitTests\\" : "EasySQL/UnitTests/"
 		}
 	},
 	"require-dev" : {
