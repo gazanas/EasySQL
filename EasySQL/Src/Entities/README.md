@@ -158,5 +158,3 @@ membersHaveMany // many to many
 ```
 $users->filterById('>', 9)->union($sub)->all()
 ```
-
-API Documentation can be found [here](../../../)
