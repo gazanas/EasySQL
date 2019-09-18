@@ -159,4 +159,4 @@ membersHaveMany // many to many
 $users->filterById('>', 9)->union($sub)->all()
 ```
 
-ORM Documentation can be found [here](EasySQL/Src/Entities)
+API Documentation can be found [here](/)
